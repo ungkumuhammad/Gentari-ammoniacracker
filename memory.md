@@ -79,15 +79,30 @@ case would clear it; the NG-maximised case would not, on this figure alone
 
 ## Equipment List & 100 ktpa H₂ Capacity Sizing (KBR-led, cross-licensor highlighted)
 
-- **2026-07-08** — Verified: KBR's Technical Information Package (`Licensor/kbr/kbr-johor-hub.md`)
-  Table of Contents references "Annexure I.(H) – Equipment List OSBL" (p.27) but the annexure
-  content is **not populated** in the document held in this repo — no tagged/itemized equipment
-  list exists there, or anywhere else in the repo (checked Casale, Duiker, Technip). The de facto
-  equipment list used for sizing was reconstructed from KBR's process narrative (§2.1, §3.2,
-  §3.9): ammonia feed pump, vaporizer/preheat train, adiabatic pre-cracker reactor, fired
-  ammonia cracking furnace (+ SCR), feed/effluent exchanger, ammonia recovery unit (H₂O/NH₃
-  absorption-distillation), PSA unit, optional H₂ compressor (not required for Gentari's 20 barg
-  B.L. spec), self-sufficient steam system.
+- **2026-07-08** — Initially verified (before the I.A–I.I annexures existed in this repo — see
+  correction below): KBR's Technical Information Package (`Licensor/kbr/kbr-johor-hub.md`) Table
+  of Contents references "Annexure I.(H) – Equipment List OSBL" (p.27) with no populated content
+  in that single-file document. The de facto equipment list used for the first sizing pass was
+  reconstructed from KBR's process narrative (§2.1, §3.2, §3.9) only.
+- **2026-07-08 (correction, same day)** — A concurrent session added the full I.A–I.I annexure
+  set to `Licensor/kbr/` (converted from the licensor's PDFs; see that session's own memory.md
+  entries and commits `17c0dc4`/`a0766d6`). This **populates** `I.H_GENTARIEquipment_List_OSBL_Rev0.md`
+  — but, as its title says, it is the **OSBL** equipment list only (Units 101–114: emergency
+  power, raw/demin/potable/fire water, cooling towers, HP flare, plant/instrument air, N₂
+  generation, waste water treatment, H₂ export metering) — correctly excluded from ISBL sizing,
+  same conclusion as before. Real tagged **ISBL** equipment numbers do exist, scattered across
+  two of the new annexures rather than in one consolidated ISBL list: `I.G` (Catalyst &amp;
+  Chemicals Summary) tags 301-B (Fired Cracker, 4.70 m³ Ni catalyst, HyProGen 830, 4-yr life),
+  301-D (Adiabatic Reactor, 4.50 m³ Ni catalyst, HyProGen 820/821, 4-yr life), 301-BSCR (SCR
+  unit, 550±50 m³ WO₃/V₂O₅-on-TiO₂, 4-yr life) — all at 12 ktpa; `I.I` (Preliminary Plot Plan)
+  additionally tags U-103/304-J (PSA), KRCSB-103 (H₂ compressor package), 305-C (combustion air
+  preheater). `I.C` (HMB, 12 ktpa NG mode) cross-validates the main package's summary KPIs:
+  ammonia feed 9,104 kg/h = 218.5 TPD vs. the summary table's 217.7 TPD; H₂ product 1,435 kg/h =
+  34.4 TPD vs. 34.3 TPD — consistent to within rounding. `I.A` confirms KBR's onstream factor as
+  8,400 h/yr (=350 d/yr), matching the figure already used from the main package's footnote 5.
+  Deliverable `kbr_100ktpa_sizing.pdf` was corrected to reflect this before merging to main; a
+  catalyst-volume-at-100-ktpa row (≈76.6 m³, linearly scaled from the single 12 ktpa data
+  point — flagged, since only one data point exists to scale from) was added to the sizing table.
 - **2026-07-08** — 100 ktpa H₂ capacity sizing developed against this equipment list. KBR's own
   package tabulates only 12/24/68/80 ktpa — 100 ktpa is **above KBR's highest published case**.
   Method: read across KBR's own flat ratios (H₂/NH₃ conversion 6.35 t/t, cooling water 25 t/t,
