@@ -77,6 +77,57 @@ RFNBO CI-ceiling comparisons (28.2 gCO₂e/MJ) — the green-ammonia-maximised
 case would clear it; the NG-maximised case would not, on this figure alone
 (subject to full additionality/correlation verification, per CLAUDE.md §4.3).
 
+## Derived Assessment — Licensor CAPEX Normalized to 100 ktpa H₂ (2026-07-08)
+
+Requested by repo owner: compare licensor CAPEX at a common 100 ktpa H₂ capacity.
+**No licensor package in this repo quotes CAPEX at exactly 100 ktpa** — each
+licensor sized its indicative case differently (KBR gave 4 discrete cases;
+Duiker, Topsoe gave 1 each; Casale and Technip gave none). Per CLAUDE.md §5,
+figures below that are not directly quoted are explicitly labeled
+**[DERIVED/ASSUMPTION]** with method shown; nothing was invented.
+
+| Licensor | Quoted CAPEX (ISBL) data points, as sourced | Source doc | Scaling method to 100 ktpa | **Est. 100 ktpa ISBL CAPEX** | Confidence |
+|---|---|---|---|---|---|
+| **KBR (H₂ACT®)** | 12 ktpa=$78M; 24 ktpa=$110M; 68 ktpa=$191M; 80 ktpa=$209M (Class V ±50%, Q3 2025 factored, ISBL only) | `Licensor/kbr/kbr-johor-hub.md` §4.1 | Log-log (power-law) regression on KBR's own 4 quoted points: Cost ≈ 21.2 × (ktpa)^0.52 | **[DERIVED] ≈ $234M** | Medium — regression on 4 real KBR points, but 100 ktpa is an extrapolation ~25% beyond KBR's largest quoted case (80 ktpa); within KBR's stated single-train ceiling of 1,200 MTPD (~420 ktpa), so no train-count step-change expected |
+| **Duiker (AHC)** | 12 ktpa=€47M lump-sum turnkey (±40%), single **customized** 1-reactor train | `Licensor/duiker/duiker-johor-hub.md` §4.1 | Generic six-tenths engineering scaling rule (Cost₂=Cost₁×(Cap₂/Cap₁)^0.6) — **not** Duiker-specific, since only 1 Duiker data point exists to anchor a regression | **[DERIVED, HIGH UNCERTAINTY] ≈ €166M** (not converted to USD — no verified FX rate sourced in-repo) | Low — single anchor point, generic exponent borrowed from general chem-eng heuristic, not Duiker's own cost curve |
+| **Haldor Topsoe** | 50 ktpa=$100M (Class V) | `tcoedatabase/WIP_Ammonia_Cracker_Database.md` table only — **no standalone Topsoe technical package exists in this repo** (see Open Questions) | Generic six-tenths rule (same caveat as Duiker — single anchor point) | **[DERIVED, HIGH UNCERTAINTY] ≈ $152M** | Low — same single-point caveat, plus underlying source document itself is not in repo, only the TCOE summary table |
+| **Technip Energies (Hynext by T.EN™)** | None. TCOE table: "Not available at current maturity." Only quantitative 100 ktpa figure available is a **tolling service fee**, not CAPEX: €50M/yr (€4.167M/mo) Monthly Cracking Service Fee for a "Full Capacity Reservation of 100 ktpa," Nippon Sanso/LBC Netherlands offer | `Licensor/technip/technip-nippon-sanso-lbc-tolling.md` | Not derivable — the €50M/yr figure is an annuity bundling initial investment + construction + O&M + margin over a ≥15-yr take-or-pay term; no disclosed discount rate/OPEX split to back out implied CAPEX | **N/A — cannot estimate without fabricating a discount-rate assumption** | — |
+| **Casale (MACH²™)** | None at any capacity. TCOE table explicitly: "Not available at current maturity" (Dec-2025 package is technical-proposal-only; Casale's 12/24/68/80 ktpa cases in the Design Basis are process cases, not cost cases) | `Licensor/Casale/*.md`; `tcoedatabase/WIP_Ammonia_Cracker_Database.md` | Not derivable — zero cost anchor points | **N/A — no basis to estimate** | — |
+
+**Method notes (carry forward when this table is reused):**
+- All CAPEX figures above are **ISBL only** (KBR and Duiker packages both explicitly
+  exclude OSBL, contingency, spares, commissioning/start-up cost, Owner's cost,
+  license fees, duties, and currency risk — see kbr-johor-hub.md §4.1 basis notes
+  and Duiker Table 8 notes). Total installed cost at 100 ktpa would be materially
+  higher than any figure in this table.
+- Accuracy classes differ and are not harmonized: KBR ±50% (Class V, Q3 2025,
+  no forward escalation); Duiker ±40% (lump-sum); Topsoe's ± band not stated in
+  the TCOE table.
+- Currency basis differs (KBR/Topsoe in USD; Duiker in EUR) — not converted here
+  to avoid introducing an unsourced FX-rate assumption; convert only with a
+  verified rate at time of use.
+- Fuel-mode basis differs and is **not** separable from these ISBL figures:
+  KBR's quoted cases are 100% NG fuel mode; Duiker's is NH₃-fired (clean fuel).
+  A furnace/combustor sized for NG firing vs. NH₃/cracked-gas firing is not
+  necessarily cost-equivalent equipment, so this is a genuine technology
+  difference embedded in the CAPEX, not just a scaling artifact.
+- Single-train vs. multi-train topology at 100 ktpa differs by licensor: Duiker's
+  own **undownscaled standard train is 276 tpd (≈97–101 ktpa/yr depending on
+  330–365 onstream days)** — i.e. 100 ktpa sits almost exactly at Duiker's
+  standard 4-reactor train nameplate, not a multiple of the customized
+  12 ktpa/1-reactor case quoted. This means the six-tenths scale-up from the
+  12 ktpa customized quote is likely a **poor proxy** for Duiker's actual
+  100 ktpa economics (a standard 4-reactor train likely prices differently,
+  probably more favorably per-unit, than continued scale-up of a bespoke
+  single-reactor design) — but Duiker's source package gives no cost figure
+  for the full-scale train, so this cannot be quantified from source; flagged
+  as a qualitative caveat only. KBR's single-train ceiling (1,200 MTPD ≈
+  420 ktpa) comfortably covers 100 ktpa in one train.
+- Casale and Technip cannot be ranked on CAPEX at all with current repo data —
+  any comparison matrix produced from this table should show them as
+  "not available" rather than omit them silently, per CLAUDE.md's comparison-
+  matrix convention.
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -114,3 +165,11 @@ case would clear it; the NG-maximised case would not, on this figure alone
   operates, in the Netherlands; KBR uses the same Nippon Sanso operator model
   in other regions) in `CLAUDE.md` §2.1. Merged branch
   `claude/ammonia-cracker-ai-agent-9n7xfx` to `main`.
+- **2026-07-08** — Added "Derived Assessment — Licensor CAPEX Normalized to
+  100 ktpa H₂" section: none of the 5 licensor packages quote CAPEX at exactly
+  100 ktpa, so produced labeled [DERIVED] estimates via power-law regression
+  (KBR, using KBR's own 4 quoted cost/capacity points) or generic six-tenths
+  scaling (Duiker, Topsoe — single anchor point each, low confidence); Casale
+  and Technip flagged N/A (zero cost anchors / tolling-fee-only, cannot
+  estimate CAPEX without fabricating inputs). Full method notes and caveats
+  recorded so the derivation is reproducible and re-auditable.
