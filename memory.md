@@ -39,6 +39,59 @@ changes. See `CLAUDE.md` for the protocol this file follows.
   states its licensor data was "refreshed from December 2025 technical
   packages" as of its Rev entry dated 30 June 2026 (i.e. the source document's
   own internal revision history — not a claim being made by this repo).
+- **2026-07-08** — Added five new KBR Gentari-specific proposal documents to
+  `Licensor/kbr/`, converted PDF→Markdown via
+  [microsoft/markitdown](https://github.com/microsoft/markitdown) at the
+  user's request. All five are Rev 0, "Issued for Proposal," KBR Doc Nos.
+  `Gentari-PR-GEN-*`, scoped to the Johor project's 12/24/68/80 kTPA H₂,
+  99.97 mol% H₂ product case (three firing modes: 100% NG, 50% NG/50%
+  cracked NH₃, 100% cracked NH₃):
+  - `I.A_GENTARIProcess_Design_Basis_Rev0.md` — Process Design Basis
+    (Gentari-PR-GEN-PDB-001, dated 22/Dec/25)
+  - `I.B_GENTARIBFD_12kTPA_100NG_Rev0.md` — ISBL Block Flow Diagram, Scenario
+    1 (12 kTPA H₂, 100% NG fuel) (Gentari-PR-GEN-BFD1A-001, dated 23-Dec-25)
+  - `I.C_GENTARIHMB_12kTPA_100NG_Rev0.md` — Preliminary Heat & Material
+    Balance (Gentari-PR-GEN-HMB-001, dated 23/Dec/25)
+  - `I.D_GENTARIProcess_Description_GENERAL_Rev0.md` — Ammonia Cracking Unit
+    Process Description, ISBL (Gentari-PR-GEN-PSD-001, dated 22/12/2025)
+  - `I.E_GENTARIFeed__Product_ALL_Rev0.md` — Preliminary ISBL Feed & Product
+    Summary, all four capacities (Gentari-PR-GEN-F&F-001, dated 22/Dec/25)
+
+  These are more granular than the existing `kbr-johor-hub.md` (KBR's
+  December 2025 general H2ACT® Technical Information Package) — they are the
+  Gentari/Johor-specific proposal package underlying it. Markitdown's PDF
+  conversion is text/table extraction only; it does not preserve diagram
+  graphics (`I.B`, the BFD, converts to scattered stream labels/numbers with
+  no visual flow — read alongside the source PDF for actual diagram
+  topology). Tables in `I.C` (HMB) and `I.E` (Feed & Product) render with
+  some column-alignment ambiguity from the source PDF's merged cells —
+  cross-check figures against the original PDF before citing exact numbers
+  in downstream analysis.
+- **2026-07-08** — Added four more KBR Gentari proposal documents to
+  `Licensor/kbr/`, same conversion method (markitdown) and same document
+  series (Rev 0, Johor 12/24/68/80 kTPA H2 case):
+  - `I.F_GENTARIUtilities_12KTPA_Rev0.md` — Preliminary Utility Summary,
+    ISBL (Gentari-PR-GEN-BLS-001)
+  - `I.G_GENTARICatalyst__Chemicals_12kTPA_Rev0.md` — Preliminary Catalyst &
+    Chemicals Summary (Gentari-PR-GEN-C&C-001, dated 23/Dec/25)
+  - `I.H_GENTARIEquipment_List_OSBL_Rev0.md` — Preliminary Equipment List,
+    OSBL (Gentari-PR-GEN-LST-0002, dated 23/12/2025, "Issued for info" not
+    "Issued for Proposal" like the others — note the different issue status)
+  - `I.I_GENTARIPreliminary_PP_12kTPA_Rev0.md` — Preliminary Plot Plan
+    (CAD/drawing-derived; markitdown extraction is fragmented drawing-note
+    text with no preserved layout — not usable as prose, refer to source PDF
+    for actual plot plan geometry)
+
+  **Flagged, not corrected**: `I.G`'s document header (line 2 of the
+  converted file) reads "Fluxys ammonia Cracking Proposal" instead of
+  "Gentari" — appears to be a leftover from a KBR document template reused
+  from an unrelated client engagement (Fluxys is a Belgian gas
+  infrastructure company, unrelated to this project). Left as-is in the
+  converted markdown per source fidelity; flagged here per CLAUDE.md §6
+  discrepancy convention. Do not treat this document's content as
+  compromised — only the header/title artifact is suspect — but verify
+  against the source PDF or with KBR if this document is used in a formal
+  deliverable.
 
 ## Baseline Licensor Comparison (from tcoedatabase, clean-fuel mode unless noted)
 
@@ -173,7 +226,26 @@ case would clear it; the NG-maximised case would not, on this figure alone
   operates, in the Netherlands; KBR uses the same Nippon Sanso operator model
   in other regions) in `CLAUDE.md` §2.1. Merged branch
   `claude/ammonia-cracker-ai-agent-9n7xfx` to `main`.
+- **2026-07-08** — Converted 5 KBR Gentari proposal PDFs (Process Design
+  Basis, BFD, HMB, Process Description, Feed & Product Summary — all Rev 0,
+  Johor 12/24/68/80 kTPA H₂ case) to Markdown via markitdown and added to
+  `Licensor/kbr/`. See Data Provenance for file list and conversion caveats.
+- **2026-07-08** — Converted 4 more KBR Gentari proposal PDFs (Utilities,
+  Catalyst & Chemicals, Equipment List OSBL, Preliminary Plot Plan) to
+  Markdown via markitdown and added to `Licensor/kbr/`, completing documents
+  I.A through I.I of the series. Flagged a "Fluxys" template-leftover
+  anomaly in `I.G`'s header — see Data Provenance.
+- **2026-07-08** — Merged branch `claude/markdown-licensor-kbr-ertd6w` to
+  `main` (fast-forward, no conflicts): adds the 9 KBR Gentari proposal
+  markdown conversions (I.A–I.I) under `Licensor/kbr/`. Note: GitHub's
+  repo default branch is still `claude/ammonia-cracker-ai-agent-9n7xfx`,
+  not `main`, though the two are content-identical up to this merge's base —
+  changing the default is a GitHub repo setting, not something git merge
+  affects.
 - **2026-07-08** — Built KBR H2ACT® equipment list verification + 100 ktpa H₂ capacity sizing,
   cross-highlighted against Casale/Duiker/Technip-Nippon Sanso; delivered as
-  `kbr_100ktpa_sizing.pdf`. See new "Equipment List & 100 ktpa H₂ Capacity Sizing" section above
-  for the full assumption log.
+  `kbr_100ktpa_sizing.pdf`. First pass was built before the I.A–I.I annexures above existed on
+  `main` (branched earlier the same day); corrected afterwards once merged in — see "Equipment
+  List & 100 ktpa H₂ Capacity Sizing" section above for the full assumption log, including the
+  correction and the real ISBL equipment tags (301-B, 301-D, 301-BSCR, U-103, KRCSB-103) found in
+  `I.G`/`I.I`. Merged branch `claude/equipment-capacity-h2-sizing-qozx8g` to `main`.
