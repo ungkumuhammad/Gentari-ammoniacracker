@@ -39,12 +39,13 @@ Licensor/            Vendor technical packages for the cracker unit itself
   Casale/            MACH2(TM) — adiabatic + top-fired furnace, axial-radial reactor
   duiker/             AHC — SCO combustor + convective cracking reactor + PSA
   kbr/                H2ACT(R) — down-fired primary-reformer-derived furnace
-  technip-offer-lbc-tolling.md   NOTE: mislabeled — this is a Nippon Sanso/LBC
-                       Tank Terminals TOLLING offer (NL Hynetwork backbone),
-                       not a Technip Energies cracker technology package. See
-                       memory.md open questions — a genuine Technip/Hynext and
-                       Topsoe/H2Retake package are referenced in the TCOE
-                       database but not yet present in this repo.
+  technip/            Technip Energies (Hynext by T.EN(TM)) cracker technology,
+                       commercially packaged as a Nippon Sanso / LBC Tank
+                       Terminals tolling offer (Netherlands, Hynetwork
+                       H2-Backbone). See §2.1 below — the licensor and the
+                       tolling operator are different entities here, which is
+                       a recurring pattern in this market, not a labeling
+                       error.
 tcoedatabase/         Gentari's Technical Center of Excellence (TCOE) ammonia
                        cracking technology database — the synthesis document:
                        chemistry, licensor comparison matrix, tolling model
@@ -59,6 +60,27 @@ tolling/              Tolling/offtake commercial packages (storage + cracking
 
 All of the above was replicated verbatim from `MYSGH2project` on 2026-07-08;
 see `memory.md` §Data Provenance for the source commit and integrity check.
+
+### 2.1 Licensor ≠ Operator — a recurring pattern to watch for
+
+A cracker technology **licensor** (who designs and guarantees the process,
+e.g. Technip Energies, KBR, Casale, Duiker) is not always the same party who
+**operates** the tolling/storage facility the customer contracts with. In the
+Netherlands, **Nippon Sanso operates LBC Tank Terminals' ammonia
+storage-and-cracking service using Technip's licensed cracker technology** —
+i.e. Technip is the technology provider, Nippon Sanso is the commercial/
+operating counterparty for that specific site. This is not unique to Technip:
+**KBR's technology is also operated by Nippon Sanso as the tolling party in
+some regions.** Which licensor Nippon Sanso pairs with is region-specific —
+confirmed for the Netherlands it is Technip.
+
+Practical implication: when a document is filed under a tolling operator's
+name (Nippon Sanso, Vopak, VTTI, Hoegh EVI), always check whether it names an
+underlying technology licensor, and cross-reference that licensor's
+`Licensor/` folder rather than treating the tolling document as a standalone,
+licensor-less data point. Do not assume the operator is the licensor, and do
+not assume the same operator uses the same licensor across regions —
+verify per project.
 
 ## 3. The AI Agent's Role
 

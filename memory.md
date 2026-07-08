@@ -79,20 +79,25 @@ case would clear it; the NG-maximised case would not, on this figure alone
 
 ## Open Questions
 
-- **`Licensor/technip-offer-lbc-tolling.md` is mislabeled.** Its actual
-  content is an indicative tolling-offer comparison from **Nippon Sanso / LBC
-  Tank Terminals** (Netherlands, Hynetwork H₂-Backbone) — a terminalling +
-  cracking tolling structure, not a Technip Energies cracker technology
-  package. It arguably belongs under `tolling/`, not `Licensor/`. Flagged,
-  not moved — confirm with repo owner before renaming/relocating, since it
-  was replicated verbatim from MYSGH2project and moving it here would
-  diverge from the source layout.
-- **No Topsoe or genuine Technip Energies licensor package exists in this
-  repo yet**, even though both appear in the TCOE database's licensor
-  comparison table (H2Retake™, Hynext by T.EN™) and reference-project lists.
-  If/when those technical packages are obtained, add them under
-  `Licensor/topsoe/` and `Licensor/technip/` respectively, and correct the
-  existing mislabeled file's folder placement at the same time.
+- **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
+  mislabeled~~. Repo owner clarified: the underlying cracker technology in
+  that document **is** Technip Energies (Hynext by T.EN™) — the document is
+  filed under Nippon Sanso / LBC Tank Terminals because **Nippon Sanso is the
+  operator/tolling counterparty for that Netherlands site, not the
+  technology licensor**. This is a recurring pattern in this market: KBR's
+  technology is also operated by Nippon Sanso as tolling party in some other
+  regions; which licensor Nippon Sanso pairs with is region-specific, and for
+  the Netherlands it is confirmed to be Technip. File moved to
+  `Licensor/technip/technip-nippon-sanso-lbc-tolling.md` for structural
+  consistency with the Casale/duiker/kbr subfolder pattern. See `CLAUDE.md`
+  §2.1 (Licensor ≠ Operator) for the general pattern this establishes —
+  apply the same "check the underlying licensor, don't assume the operator
+  named on a tolling doc is the technology provider" logic to any new
+  tolling document added to this repo (Vopak/Linde, VTTI, Hoegh EVI, etc.).
+- **No standalone Topsoe (H2Retake™) technical package exists in this repo
+  yet**, even though it appears in the TCOE database's licensor comparison
+  table and reference-project lists. If/when obtained, add under
+  `Licensor/topsoe/`.
 - CI figures across sources use inconsistent bases (kgCO₂/kgH₂,
   kgCO₂e/kgH₂, gCO₂e/MJ) and inconsistent fuel-mode assumptions — no
   unified conversion table exists yet in this repo. Consider building one
@@ -103,3 +108,9 @@ case would clear it; the NG-maximised case would not, on this figure alone
 - **2026-07-08** — Repo initialized: replicated `Licensor/`, `tcoedatabase/`,
   `tolling/` from MYSGH2project; added `CLAUDE.md` (agent persona + regulatory
   scope) and this `memory.md` (seed baseline + open questions).
+- **2026-07-08** — Corrected the Technip/Nippon Sanso open question: moved
+  `Licensor/technip-offer-lbc-tolling.md` → `Licensor/technip/technip-nippon-sanso-lbc-tolling.md`;
+  documented the licensor-vs-operator pattern (Technip licenses, Nippon Sanso
+  operates, in the Netherlands; KBR uses the same Nippon Sanso operator model
+  in other regions) in `CLAUDE.md` §2.1. Merged branch
+  `claude/ammonia-cracker-ai-agent-9n7xfx` to `main`.
