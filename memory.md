@@ -67,6 +67,31 @@ changes. See `CLAUDE.md` for the protocol this file follows.
   some column-alignment ambiguity from the source PDF's merged cells —
   cross-check figures against the original PDF before citing exact numbers
   in downstream analysis.
+- **2026-07-08** — Added four more KBR Gentari proposal documents to
+  `Licensor/kbr/`, same conversion method (markitdown) and same document
+  series (Rev 0, Johor 12/24/68/80 kTPA H2 case):
+  - `I.F_GENTARIUtilities_12KTPA_Rev0.md` — Preliminary Utility Summary,
+    ISBL (Gentari-PR-GEN-BLS-001)
+  - `I.G_GENTARICatalyst__Chemicals_12kTPA_Rev0.md` — Preliminary Catalyst &
+    Chemicals Summary (Gentari-PR-GEN-C&C-001, dated 23/Dec/25)
+  - `I.H_GENTARIEquipment_List_OSBL_Rev0.md` — Preliminary Equipment List,
+    OSBL (Gentari-PR-GEN-LST-0002, dated 23/12/2025, "Issued for info" not
+    "Issued for Proposal" like the others — note the different issue status)
+  - `I.I_GENTARIPreliminary_PP_12kTPA_Rev0.md` — Preliminary Plot Plan
+    (CAD/drawing-derived; markitdown extraction is fragmented drawing-note
+    text with no preserved layout — not usable as prose, refer to source PDF
+    for actual plot plan geometry)
+
+  **Flagged, not corrected**: `I.G`'s document header (line 2 of the
+  converted file) reads "Fluxys ammonia Cracking Proposal" instead of
+  "Gentari" — appears to be a leftover from a KBR document template reused
+  from an unrelated client engagement (Fluxys is a Belgian gas
+  infrastructure company, unrelated to this project). Left as-is in the
+  converted markdown per source fidelity; flagged here per CLAUDE.md §6
+  discrepancy convention. Do not treat this document's content as
+  compromised — only the header/title artifact is suspect — but verify
+  against the source PDF or with KBR if this document is used in a formal
+  deliverable.
 
 ## Baseline Licensor Comparison (from tcoedatabase, clean-fuel mode unless noted)
 
@@ -146,3 +171,8 @@ case would clear it; the NG-maximised case would not, on this figure alone
   Basis, BFD, HMB, Process Description, Feed & Product Summary — all Rev 0,
   Johor 12/24/68/80 kTPA H₂ case) to Markdown via markitdown and added to
   `Licensor/kbr/`. See Data Provenance for file list and conversion caveats.
+- **2026-07-08** — Converted 4 more KBR Gentari proposal PDFs (Utilities,
+  Catalyst & Chemicals, Equipment List OSBL, Preliminary Plot Plan) to
+  Markdown via markitdown and added to `Licensor/kbr/`, completing documents
+  I.A through I.I of the series. Flagged a "Fluxys" template-leftover
+  anomaly in `I.G`'s header — see Data Provenance.
