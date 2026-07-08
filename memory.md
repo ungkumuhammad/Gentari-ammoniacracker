@@ -77,6 +77,50 @@ RFNBO CI-ceiling comparisons (28.2 gCO₂e/MJ) — the green-ammonia-maximised
 case would clear it; the NG-maximised case would not, on this figure alone
 (subject to full additionality/correlation verification, per CLAUDE.md §4.3).
 
+## Equipment List & 100 ktpa H₂ Capacity Sizing (KBR-led, cross-licensor highlighted)
+
+- **2026-07-08** — Verified: KBR's Technical Information Package (`Licensor/kbr/kbr-johor-hub.md`)
+  Table of Contents references "Annexure I.(H) – Equipment List OSBL" (p.27) but the annexure
+  content is **not populated** in the document held in this repo — no tagged/itemized equipment
+  list exists there, or anywhere else in the repo (checked Casale, Duiker, Technip). The de facto
+  equipment list used for sizing was reconstructed from KBR's process narrative (§2.1, §3.2,
+  §3.9): ammonia feed pump, vaporizer/preheat train, adiabatic pre-cracker reactor, fired
+  ammonia cracking furnace (+ SCR), feed/effluent exchanger, ammonia recovery unit (H₂O/NH₃
+  absorption-distillation), PSA unit, optional H₂ compressor (not required for Gentari's 20 barg
+  B.L. spec), self-sufficient steam system.
+- **2026-07-08** — 100 ktpa H₂ capacity sizing developed against this equipment list. KBR's own
+  package tabulates only 12/24/68/80 ktpa — 100 ktpa is **above KBR's highest published case**.
+  Method: read across KBR's own flat ratios (H₂/NH₃ conversion 6.35 t/t, cooling water 25 t/t,
+  demin water 0.1 t/t, all constant 24–80 ktpa) directly; **extrapolated** (flagged as assumption)
+  electricity demand (linear fit on 68→80 ktpa trend → ≈263 kWh/t H₂) and ISBL CAPEX (power-law
+  fit on KBR's own 68/80 ktpa points, exponent ≈0.555 → ≈US$237M, Class V ±50%, uncertainty
+  widens further given the extrapolation). Reaction duty (≈50.3 MW, thermodynamic minimum only)
+  calculated from H₂ production rate + ΔH=46 kJ/mol NH₃ (sourced, tcoedatabase Mass/Energy
+  Balance section) — excludes preheat/sensible-heat/furnace losses, not a real fired-duty figure.
+  Full working shown in `kbr_100ktpa_sizing.pdf` (delivered to repo owner 2026-07-08, not checked
+  into the repo as it's a working deliverable, not a source document).
+- **2026-07-08** — Cross-licensor highlight for the same 100 ktpa sizing exercise: Casale
+  (self-sustaining/clean scheme, NH₃:H₂=7.20 t/t per tcoedatabase) uses its **own** stated
+  onstream factor of 8,500 h/yr (354.2 d/yr) — this **differs from KBR's 350 d/yr** even though
+  both packages were prepared for the same Johor Hub RFP and the same four nominal capacities
+  (12/24/68/80 ktpa). Flagged as a discrepancy, not silently reconciled, per CLAUDE.md §6.
+  Casale has no CAPEX or electricity-vs-scale trend published in its Dec-2025 package (technical
+  proposal only) so those cells are N/A, not derived. Duiker's onstream days (333.3 d/yr) are
+  **implied** (not stated) from its own two figures (12 ktpa = 36 tpd); Duiker's largest
+  documented single train is 276 tpd (≈92 ktpa at that implied basis) — the closest
+  equipment-level data point to 100 ktpa anywhere in the repo besides the item below. Duiker's
+  CAPEX is a single data point (€47M @ 12 ktpa only) so no scaling curve can be fit without an
+  unsourced assumption — not attempted.
+- **2026-07-08** — The **only literal "100 ktpa" figure anywhere in this repo** is in
+  `Licensor/technip/technip-nippon-sanso-lbc-tolling.md`: Nippon Sanso/LBC's "Full Capacity
+  Reservation of 100 ktpa" under a proposed Ammonia Cracking Service Agreement (Monthly Cracking
+  Service Fee €4,167,000 = 1/12 of €50,000,000). This is a **commercial/tolling capacity
+  reservation**, not an equipment list or mass/energy balance — it has no published NH₃:H₂
+  ratio or equipment breakdown in this repo and was not merged into the technical sizing table.
+  Noted as market evidence that 100 ktpa is a realistic single-ACU scale being quoted in this
+  market (Netherlands Hynetwork H₂-Backbone), underlying licensor = Technip Energies per
+  CLAUDE.md §2.1.
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -114,3 +158,7 @@ case would clear it; the NG-maximised case would not, on this figure alone
   operates, in the Netherlands; KBR uses the same Nippon Sanso operator model
   in other regions) in `CLAUDE.md` §2.1. Merged branch
   `claude/ammonia-cracker-ai-agent-9n7xfx` to `main`.
+- **2026-07-08** — Built KBR H2ACT® equipment list verification + 100 ktpa H₂ capacity sizing,
+  cross-highlighted against Casale/Duiker/Technip-Nippon Sanso; delivered as
+  `kbr_100ktpa_sizing.pdf`. See new "Equipment List & 100 ktpa H₂ Capacity Sizing" section above
+  for the full assumption log.
