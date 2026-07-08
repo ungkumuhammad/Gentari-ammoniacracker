@@ -176,3 +176,10 @@ case would clear it; the NG-maximised case would not, on this figure alone
   Markdown via markitdown and added to `Licensor/kbr/`, completing documents
   I.A through I.I of the series. Flagged a "Fluxys" template-leftover
   anomaly in `I.G`'s header — see Data Provenance.
+- **2026-07-08** — Merged branch `claude/markdown-licensor-kbr-ertd6w` to
+  `main` (fast-forward, no conflicts): adds the 9 KBR Gentari proposal
+  markdown conversions (I.A–I.I) under `Licensor/kbr/`. Note: GitHub's
+  repo default branch is still `claude/ammonia-cracker-ai-agent-9n7xfx`,
+  not `main`, though the two are content-identical up to this merge's base —
+  changing the default is a GitHub repo setting, not something git merge
+  affects.
