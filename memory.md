@@ -102,6 +102,12 @@ case would clear it; the NG-maximised case would not, on this figure alone
   kgCO₂e/kgH₂, gCO₂e/MJ) and inconsistent fuel-mode assumptions — no
   unified conversion table exists yet in this repo. Consider building one
   before doing cross-licensor RFNBO/KEEI screening at scale.
+- **OPEN 2026-07-09** — `mdlguideline.md` (Engineering Excel Development
+  Specification) calls for a companion `copilot.md` / AI-development
+  guideline that tells an AI assistant exactly how to generate each
+  worksheet against the spec (naming, formatting, formula-writing
+  practices). Not yet created — needed before the first Excel workbook
+  (ammonia cracker sizing/CI screening tool) is built.
 
 ## Changelog
 
@@ -114,3 +120,12 @@ case would clear it; the NG-maximised case would not, on this figure alone
   operates, in the Netherlands; KBR uses the same Nippon Sanso operator model
   in other regions) in `CLAUDE.md` §2.1. Merged branch
   `claude/ammonia-cracker-ai-agent-9n7xfx` to `main`.
+- **2026-07-09** — Added `mdlguideline.md`: Engineering Excel Development
+  Specification governing every future engineering calculation workbook
+  built for the ammonia cracker modeling database (cover/guide/inputs/
+  calc/dashboard/report structure, color coding, formula standards, naming
+  conventions, RFNBO/KEEI wording rule tying back to `CLAUDE.md` §4.3, and
+  a No-Fabrication-Rule equivalent for hardcoded vs. formula-derived
+  values). Logged as prerequisite groundwork before any `.xlsx` tool is
+  built in this repo. Open follow-up: companion `copilot.md` (see Open
+  Questions).
