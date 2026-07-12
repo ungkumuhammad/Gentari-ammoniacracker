@@ -109,6 +109,95 @@ case would clear it; the NG-maximised case would not, on this figure alone
   practices). Not yet created — needed before the first Excel workbook
   (ammonia cracker sizing/CI screening tool) is built.
 
+## Assumptions & Data Gaps — Ammonia Cracker Sizing/Economics Workbook v1
+
+Logged 2026-07-09, per `tools/cracker_model/data.py` and the approved plan
+at `/root/.claude/plans/i-want-to-start-mutable-dongarra.md`. Each is
+admin-editable on the workbook's `Constants` sheet.
+
+- **EUR/USD FX rate**: no EUR→USD rate exists in any source document in
+  this repo. Defaulted to the **ECB euro foreign exchange reference rate,
+  1 EUR = 1.1448 USD, as of 3 July 2026**
+  ([ECB reference rates](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html)).
+  A real, dated, citable snapshot rate — still ASSUMPTION-labeled because
+  applying one day's rate across a multi-year project cash flow is itself
+  a modeling choice, not because the rate itself is unsourced.
+- **KBR OSBL % beyond 12 ktpa**: KBR's package quantifies OSBL only at 12
+  ktpa (≈55% of ISBL: $120.9M total − $78M ISBL = $42.9M ≈ 55.0%); KBR's
+  own note says this ratio declines at larger scale but gives no second
+  data point. Applied flat (55%) to 24/68/80 ktpa as the only way to
+  produce a usable Own & Operate CAPEX total at those capacities — decided
+  by repo owner via `AskUserQuestion` during planning.
+- **Regional CAPEX factors**: no freely citable regional location-factor
+  table exists (Compass International / Intratec Plant Location Factor /
+  Aspen Richardson all publish real ones but are paywalled — confirmed via
+  web search). All regions (Malaysia, Netherlands, Belgium, Other) default
+  to factor = 1.00, explicitly flagged "pending licensed source; admin to
+  update" on the `Constants` sheet. Do not treat 1.00 as a researched
+  finding that these regions have equivalent costs.
+- **Casale fuel-scheme → shared fuel-mode mapping**: Casale's package
+  gives only a generic 3-scheme table (Self-sustaining / Low-carbon /
+  Max-fuel), never mapped to the NG100/50-50/Clean-Fuel dropdown shared
+  with KBR/Duiker. Mapped (decided by repo owner): Self-sustaining → 100%
+  Clean Fuel/Ammonia (CI=0, ammonia-only-fired); Low-carbon → 50% NG/50%
+  Ammonia ("admits...limited external fuel source" per Casale's own
+  text); Maximum Fuel Source → 100% Natural Gas (heaviest external-fuel
+  use, highest CI, consistent with footnote 5's "100% CH4 assumed as
+  external fuel source"). This correspondence is Gentari's interpretation
+  for comparability, not something Casale's package itself states —
+  printed next to the mapped values on `Calc_CarbonIntensity`/`Constants`.
+- **KBR H2 delivery pressure conflict, unresolved**: KBR's own package
+  states two different figures — 28 barg (§3.3 KPI table) vs. 20 barg
+  minimum (§3.1 Design Basis, §3.8). Shown on the workbook's `Guide` sheet
+  as an open conflict, not silently picked either way.
+- **Nippon Sanso/LBC (Technip-licensed) tolling excluded from v1**: has a
+  fixed Monthly Cracking Service Fee structure (€4,167,000/month for 100
+  ktpa reservation) plus separate €40/t NH₃ terminalling — structurally
+  different from the shared $/kg-H₂ tariff model used by Vopak & Linde /
+  VTTI / Hoegh EVI. Excluded from the `TollingParty` dropdown; logged here
+  as a v2 candidate, not silently dropped.
+- **Duiker NH₃:H₂ ratio discrepancy**: this file's existing "Baseline
+  Licensor Comparison" table (above) carries Duiker NH₃:H₂ = 7.03 t/t
+  (sourced via `tcoedatabase`). Duiker's own primary package
+  (`Licensor/duiker/duiker-johor-hub.md`) states **7.05 t/t for the
+  NH₃-fired case (@ 90.9% enthalpy efficiency) and 6.83 t/t for the
+  NG-fired case (@ 90.6% enthalpy efficiency)** — two discrete figures,
+  not one blended value. The workbook uses the primary-source 7.05/6.83
+  figures; this 7.03-vs-7.05/6.83 discrepancy is flagged here per
+  `CLAUDE.md` §6, not silently reconciled.
+- **v1 scope limitation — OPEX/CI are not regression-extrapolated**:
+  unlike CAPEX (which uses a global log-log regression outside KBR's
+  12–80 ktpa range, per repo owner's explicit request), OPEX and CI stay
+  N/A outside that range in v1, because both depend on capacity, fuel
+  mode, and (for OPEX) ammonia price simultaneously — a robust
+  multi-dimensional regression was judged disproportionate for v1. Noted
+  as a v2 candidate.
+- **Casale project life (20 yr) vs. KBR (25 yr)**: `ProjectLife_yr`
+  defaults per-licensor (KBR 25 yr per its own §3.3 footnote 5; Casale 20
+  yr per its Technical Proposal §6.1) rather than a single hardcoded
+  value; the workbook flags a mismatch if the user overrides
+  `ProjectLife_yr` away from the selected licensor's own stated basis.
+- **`mdlguideline.md` §7 deviation**: the openpyxl-based build pipeline
+  uses classic `INDEX`/`MATCH`/`IFERROR`/named-range formulas instead of
+  the guideline's preferred `LET()`/`LAMBDA()`, because openpyxl cannot
+  verify dynamic-array formulas render correctly against this
+  environment's only recalculation engine (headless LibreOffice). See
+  `mdlguideline.md` §7 for the scoped caveat added alongside this entry.
+- **Environment limitation — no live Excel/LibreOffice recalculation
+  available**: headless LibreOffice (`soffice --headless --convert-to
+  ...`) fails to load even a trivial file in this build environment
+  (confirmed by direct testing, not specific to this workbook) — this is
+  a sandbox/environment constraint, not a defect in the generated file.
+  `tools/cracker_model/qa_recalc.py` therefore validates formula *logic*
+  via an independent pure-Python re-implementation of the KBR piecewise
+  interpolation and global regression (cross-checked against all 4
+  sourced data points, matching exactly) and a static named-range
+  reference check, rather than live golden-value assertions. Opening the
+  workbook in a real Excel or working LibreOffice install (which
+  recalculates on open, per `fullCalcOnLoad=True` set in `build.py`) is
+  the outstanding verification step before treating any cell value as
+  confirmed correct.
+
 ## Changelog
 
 - **2026-07-08** — Repo initialized: replicated `Licensor/`, `tcoedatabase/`,
@@ -129,3 +218,19 @@ case would clear it; the NG-maximised case would not, on this figure alone
   values). Logged as prerequisite groundwork before any `.xlsx` tool is
   built in this repo. Open follow-up: companion `copilot.md` (see Open
   Questions).
+- **2026-07-09** — Built v1 of the Ammonia Cracker Capacity Sizing &
+  Project Economics workbook (`tools/cracker_model/`, generates
+  `output/Ammonia_Cracker_Sizing_Economics_v1.xlsx`, git-ignored —
+  regenerate via `python -m tools.cracker_model.build`). All 5 licensors
+  (Topsoe, Technip, KBR, Casale, Duiker) selectable with explicit N/A
+  flagging where source data is missing; Own & Operate and Tolling
+  (Vopak & Linde / VTTI / Hoegh EVI) commercial modes; NG100/50-50/
+  Clean-Fuel fuel-mode toggle; regional CAPEX factor mechanism; unlevered
+  merchant-sale IRR; qualitative-only equipment lists; password-protected
+  `Constants`/`Settings` sheets (documented deterrent per `mdlguideline.md`
+  §12); a `Comparison` sheet independently re-deriving all 8 licensor x
+  mode permutations. Every sourced/assumed figure traces through
+  `tools/cracker_model/data.py`, mechanically checked by
+  `validate_data.py` (62 figures, all cited or ASSUMPTION-labeled). See
+  "Assumptions & Data Gaps" above for every labeled assumption this build
+  required, and `mdlguideline.md` §7 for the logged LET/LAMBDA deviation.
