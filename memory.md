@@ -478,3 +478,8 @@ admin-editable on the workbook's `Constants` sheet.
   between KBR points range 0.50 (12→24) to 0.55 (68→80) — slight flattening
   of scale economy at the top of the quoted range. All derived from KBR's
   Class V ±50% ISBL estimates (Q3 2025); the ±50% band still applies.
+- **2026-09-28** — Repo owner: deck chart `kbr_capex_scaling.png` now shows
+  the **power-law fit only** (linear fit removed from the chart; the linear
+  formula stays recorded above for reference). Colours set by repo owner:
+  #7030A0 main (quoted points + fitted curve), #0070C0 secondary (100 ktpa
+  extrapolation + ±50% accuracy bars).
