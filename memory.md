@@ -240,6 +240,30 @@ figures below that are not directly quoted are explicitly labeled
   "not available" rather than omit them silently, per CLAUDE.md's comparison-
   matrix convention.
 
+## CAPEX Reference Table (2026-09-28)
+
+- Consolidated every CAPEX figure in the repo into
+  `tcoedatabase/CAPEX_Reference.md` (quoted figures, specific CAPEX per t/yr,
+  scope inclusions/exclusions, licence fees, 100 ktpa derived estimates,
+  tolling fees shown as context only). Two discrepancies surfaced while
+  re-checking, **flagged, not corrected**:
+  - **Duiker construction licence fee — in or out of €47M?** Duiker §4.2
+    says the capacity-adjusted Plant Construction License Fee "is added in
+    the CAPEX estimations in Table 8" (i.e. inside €47M, and Table 8 lists it
+    under "Includes"). `tools/cracker_model/data.py`
+    `DUIKER_LICENSE_FEE_CONSTRUCTION_EUR` says "additive to CAPEX, not folded
+    into the EUR47M total" — contradicting the source and the same file's
+    `DUIKER_CAPEX_TOTAL_EUR_M` note. Check whether the workbook adds €2.7M on
+    top of €47M (double count) before relying on Duiker CAPEX from it.
+  - **Duiker 100 ktpa six-tenths estimate**: the Derived Assessment section
+    above records ≈€166M; recomputing 47 × (100/12)^0.6 gives €167.7M.
+    Within rounding of a ±40% figure, but should be reconciled.
+  - Also noted: two KBR 100 ktpa estimates coexist in this file — ≈$234M
+    (all-4-point regression, exponent 0.521, R² 0.9997, used by the
+    workbook) and ≈$237M (68/80 two-point fit, exponent 0.555, used in
+    `kbr_100ktpa_sizing.pdf`). Both shown in the reference table with their
+    method; not a data error, but pick one per deliverable and say which.
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -430,3 +454,8 @@ admin-editable on the workbook's `Constants` sheet.
   "Assumptions & Data Gaps" above for every labeled assumption this build
   required, and `mdlguideline.md` §7 for the logged LET/LAMBDA deviation.
   Merged branch `claude/engineering-excel-guidelines-5begjx` to `main`.
+- **2026-09-28** — Added `tcoedatabase/CAPEX_Reference.md`: consolidated
+  CAPEX reference table across all licensors (KBR 4 capacity points + 12 ktpa
+  ISBL+OSBL, Duiker, Topsoe, Technip/Casale N/A), with scope comparison and
+  derived specific/100 ktpa figures. Flagged the Duiker licence-fee and
+  €166M-vs-€168M discrepancies — see "CAPEX Reference Table" section.
