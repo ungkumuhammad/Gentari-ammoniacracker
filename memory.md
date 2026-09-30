@@ -617,3 +617,7 @@ admin-editable on the workbook's `Constants` sheet.
   instruments from the 540 kW. I.H lists one package (111-L, quantity 1), so
   it is one 1,080 kWe unit, not 2 × 540 kW. N+1 genset redundancy would be a
   separate, still-open decision.
+- **2026-09-30** — Fast-forwarded `main` to `claude/affectionate-johnson-pveubj`
+  at the repo owner's request. This brings in the KBR OSBL sizing: the 12 kTPA
+  markdown and script, the 12/24/80/160 kTPA workbook generator, and the
+  unprotect / ×2 clarification.
