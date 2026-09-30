@@ -621,3 +621,11 @@ admin-editable on the workbook's `Constants` sheet.
   at the repo owner's request. This brings in the KBR OSBL sizing: the 12 kTPA
   markdown and script, the 12/24/80/160 kTPA workbook generator, and the
   unprotect / ×2 clarification.
+
+- **2026-09-30** — The OSBL equipment list (I.H) and the sizing rules of
+  `tools/kbr_osbl_workbook.py` (S1–S4, A1–A14) were ported to JavaScript in
+  `ungkumuhammad/frontendengineeringmodel`, `Dashboard/public/modules/nh3-cracker-design.html`
+  (new "OSBL equipment" tab), so the list follows the model's H₂ capacity. The port reproduces the workbook at
+  12 / 24 / 80 / 160 kTPA (genset 1,080 / 1,929 / 6,121 / 12,241 kWe). Between anchors, power / NG / NH₃ / H₂
+  are interpolated linearly from I.E, an added assumption. If the workbook rules change, update that module too.
+  The same commit adds an NG price unit dropdown (USD/MWh, USD/MMBtu) and a user-defined Custom fuel mode.
