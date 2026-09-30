@@ -642,3 +642,6 @@ admin-editable on the workbook's `Constants` sheet.
   Duiker CO₂ discrepancy remains. Open minor point: Duiker's NG quantity in the model's NG tile (≈0.076 kg/kg H₂, back-derived
   from 0.21 with the KBR factor) differs from Table 6 (0.097 kg/kg H₂). The cracker model's process flow now follows Duiker
   §3.2/§3.6 when the Duiker basis is selected.
+
+- **2026-09-30** — Repo owner set the cracker model's **OSBL plot area default to 200 % of ISBL** (was my 50 %
+  placeholder). Still an assumption: no OSBL area in any package. Footprints in the model are now quoted sqft first.
