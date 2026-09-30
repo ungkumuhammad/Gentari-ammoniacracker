@@ -264,6 +264,43 @@ figures below that are not directly quoted are explicitly labeled
     `kbr_100ktpa_sizing.pdf`). Both shown in the reference table with their
     method; not a data error, but pick one per deliverable and say which.
 
+## KBR OSBL Equipment Sizing — 12 kTPA (2026-09-30)
+
+- Repo owner asked for the KBR OSBL equipment list (I.H, Units 101–114) to be
+  sized for 12 kTPA from KBR's utility summary (I.F). Deliverable:
+  `tcoedatabase/KBR_OSBL_Sizing_12ktpa.md`; arithmetic in
+  `tools/kbr_osbl_sizing_12ktpa.py` [all results DERIVED].
+- **Decision (repo owner): emergency power method.** Basis = I.F max power
+  540 kW × 2 (I.F Note 7 excludes OSBL/intermittent users) = 1,080 kWe;
+  24 h backup; 50% engine efficiency; diesel LHV. Result: 1,350 kVA
+  @ 0.8 pf, 4,340 kg diesel / 5.3 m³ net / 6 m³ nominal tank (LHV 43.0 MJ/kg
+  IPCC 2006; density 820 kg/m³ EN 590 low end).
+- **Flagged:** I.F **Note 9** gives KBR's own emergency backup estimate as
+  **0.3 MW** (L.O. pumps, instrumentation, MOVs), 3.6× below the owner's
+  basis. On 300 kW the 24 h tank would be 1.5 m³ net. At 40% genset
+  efficiency the owner-basis tank rises to 6.6 m³ net. Not reconciled.
+- **Assumptions adopted (A1–A14 in the deliverable):** +10% margin on I.F
+  maximum flows; 24 h storage autonomy with net/nominal 0.9 (extends the
+  owner's 24 h diesel basis to all tanks); CT cycles of concentration 5;
+  demin recovery 80%; headcount 30 and 2 simultaneous safety showers
+  (owner to confirm); heatless IA dryer with 15% purge; IA receiver hold-up
+  15 min, 7.5 → 4.0 barg; start-up N₂ peak lasting 24 h; H₂ export velocity
+  ≤ 20 m/s; governing flare case = full cracked gas (proxy until a relief
+  study exists).
+- **KBR discrepancies found (flagged, not corrected):** CW supply temperature
+  25 °C in I.F vs 30 °C in I.A/I.D, and 25 °C is below the ≈25.2 °C design
+  wet bulb (28 °C / 80% RH per I.A, Stull formula), so 30 °C was used. CW
+  pressures differ across I.A (2.0 supply / 4.0 return, apparently
+  inverted), I.D (4.0 supply) and I.F (5.0 / 3.5). I.F demin 245 kg/h vs
+  hub 0.1 t/t H₂ ≈ 143 kg/h. I.F CW 30.1 t/h vs hub 25 t/t ≈ 35.7 t/h. NG
+  pressure 7.5 (I.F) vs 7 barg (I.A). H₂ rate 1,435 (I.C) vs 1,426 kg/h
+  (I.E). I.H: 161-JA/B under Fire Water labelled "Service Water Pumps";
+  151-JA/B quantity 1 despite A/B tag; 132-JA/B and 221-JA/B may duplicate.
+- **Not sizable from repo data (TBD):** fire water (161-JA/B and the fire
+  reserve, likely held in 121-F since Unit 106 has no tank), flare KO drum
+  heater, off-spec tank 211-F (service undefined), oil-water package
+  (rainfall), ammoniacal drain drum/pumps (ISBL inventories not published).
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -525,3 +562,8 @@ admin-editable on the workbook's `Constants` sheet.
 - **2026-09-30** — Fast-forwarded `main` to `claude/capex-reference-table-pqneh6`
   (`fc2649e`): Duiker CAPEX chart, KBR/Duiker footprint charts (m² + sqft,
   capacity-labelled), `tools/licensor_charts.py`.
+- **2026-09-30** — Added `tcoedatabase/KBR_OSBL_Sizing_12ktpa.md` and
+  `tools/kbr_osbl_sizing_12ktpa.py`: preliminary sizing of KBR's OSBL
+  equipment list (I.H) for 12 kTPA from I.F/I.C/I.E/I.A. The emergency power
+  method was set by the repo owner. See "KBR OSBL Equipment Sizing — 12 kTPA"
+  above for the assumptions, the discrepancies and the TBD items.
