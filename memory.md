@@ -511,3 +511,11 @@ admin-editable on the workbook's `Constants` sheet.
     (Duiker excludes NH₃ storage and H₂ compression beyond 50 bar(g); KBR
     excludes offsites & utilities). Check scope before comparing the two
     footprints directly.
+- **2026-09-30** — Footprint charts (`kbr_footprint_scaling.png`,
+  `duiker_footprint_scaling.png`) now show **sqft alongside m²**: point labels,
+  100 ktpa label, formula box, and a right-hand sqft axis (a unit conversion of
+  the same values, not a second measure). Conversion 1 m² = 10.7639 sqft
+  (international foot, 0.3048 m exact). In sqft: KBR 37,674 / 47,361 / 76,693 /
+  80,729 sqft at 12/24/68/80 ktpa, Area ≈ 13,194 × ktpa^0.41 → ≈88,595 sqft @
+  100 ktpa; Duiker ≈9,688 sqft @ 12 ktpa, 39,396 sqft @ 276 tpd,
+  Area ≈ 1,750 × ktpa^0.69 → ≈41,724 sqft @ 100 ktpa [all DERIVED].

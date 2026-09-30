@@ -33,6 +33,7 @@ SURFACE = "#ffffff"
 # Duiker states 12 ktpa = 36 tpd, i.e. an implied 333.3 onstream days/yr.
 # Its standard 276 tpd train converts to ktpa on that same implied basis.
 DUIKER_DAYS = 12_000 / 36
+SQFT_PER_M2 = 1 / 0.3048 ** 2  # 10.7639 (international foot, exact definition)
 DUIKER_STD_TRAIN_KTPA = 276 * DUIKER_DAYS / 1000  # ~92.0 ktpa [DERIVED]
 
 
@@ -56,6 +57,7 @@ class Chart:
     vline: tuple = None        # (x, label) reference marker
     xticks: list = field(default_factory=lambda: [0, 12, 24, 40, 68, 80, 100])
     labels_below: bool = False  # put point labels below-right of the marker
+    sqft: bool = False          # footprint charts: also show ft² (labels, formula, right axis)
     legend_anchor: tuple = (1.0, 0.0)
 
 
@@ -77,7 +79,7 @@ def draw(ch: Chart) -> dict:
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 11})
     fig, ax = plt.subplots(figsize=(12.8, 7.2), dpi=150, facecolor=SURFACE)
     ax.set_facecolor(SURFACE)
-    fig.subplots_adjust(left=0.08, right=0.97, top=0.83, bottom=0.20)
+    fig.subplots_adjust(left=0.08, right=0.91 if ch.sqft else 0.97, top=0.83, bottom=0.20)
 
     if ch.accuracy:
         ax.errorbar(x, y, yerr=y * ch.accuracy, fmt="none", ecolor=SECONDARY, alpha=0.35,
@@ -108,26 +110,38 @@ def draw(ch: Chart) -> dict:
         else:
             ax.annotate(lab, (xi, yi), xytext=(-12, 12), textcoords="offset points",
                         ha="right", fontsize=12, fontweight="bold", color=INK)
-    ax.annotate(f"≈{ch.value_fmt.format(extrap)}\n(extrapolated)", (EXTRAP_KTPA, extrap),
+    extrap_txt = f"≈{ch.value_fmt.format(extrap)}"
+    if ch.sqft:
+        extrap_txt += f"\n≈{extrap * SQFT_PER_M2:,.0f} sqft"
+    ax.annotate(f"{extrap_txt}\n(extrapolated)", (EXTRAP_KTPA, extrap),
                 xytext=(0, 16), textcoords="offset points", ha="center", va="bottom",
                 fontsize=11, color=INK_2)
 
     if ch.assumed_n is None:
         fit_note = f"(R² = {r2:.4f}, log-log)" if len(x) > 2 else "(two-point fit — exact through both points)"
         box = (f"Scaling factor  n ≈ {n:.2f}\n"
-               f"{ch.unit} ≈ {a:.2f} × Capacity (ktpa)^{n:.2f}   {fit_note}")
+               f"{ch.unit} ≈ {a:,.2f} × Capacity (ktpa)^{n:.2f}   {fit_note}")
+        if ch.sqft:
+            box += f"\nArea (sqft) ≈ {a * SQFT_PER_M2:,.0f} × Capacity (ktpa)^{n:.2f}"
     else:
         box = (f"Scaling factor  n = {n:.1f}  (ASSUMED — six-tenths rule, not Duiker-specific)\n"
                f"{ch.unit} ≈ {a:.2f} × Capacity (ktpa)^{n:.1f}   (anchored on the single quoted point)")
     ax.text(0.03, 0.95, box, transform=ax.transAxes, va="top", ha="left", fontsize=13,
             color=INK, bbox=dict(boxstyle="round,pad=0.6", fc="#f4f3ef", ec=GRID))
 
-    ax.set_xlim(0, 105)
+    ax.set_xlim(0, 109 if ch.sqft else 105)
     ax.set_ylim(0, ch.ylim)
     ax.set_xticks(ch.xticks)
     ax.set_xlabel("H₂ capacity (ktpa)", color=INK_2, fontsize=12)
     ax.set_ylabel(ch.ylabel, color=INK_2, fontsize=12)
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+    if ch.sqft:
+        sec = ax.secondary_yaxis("right", functions=(lambda v: v * SQFT_PER_M2,
+                                                      lambda v: v / SQFT_PER_M2))
+        sec.set_ylabel("ISBL plot area (sqft)", color=INK_2, fontsize=12)
+        sec.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+        sec.tick_params(colors=INK_2, length=0)
+        sec.spines["right"].set_visible(False)
     ax.grid(axis="y", color=GRID, lw=1)
     ax.set_axisbelow(True)
     for s in ("top", "right", "left"):
@@ -214,13 +228,14 @@ CHARTS = [
                   "(12 ktpa: see also Preliminary Plot Plan, Annexure I.I).\n"
                   "KBR notes the footprint can be optimised further, especially on an existing industrial site, "
                   "and that modularisation is possible. No accuracy class is stated.\n"
-                  "Areas (length × width), fit, scaling factor and 100 ktpa value are Gentari calculations "
-                  "from KBR's quoted plot dimensions."),
+                  "Areas (length × width), sqft conversion (1 m² = 10.764 sqft), fit, scaling factor and "
+                  "100 ktpa value are Gentari calculations from KBR's quoted plot dimensions."),
         cap=KBR_CAP, val=[m2(d) for d in KBR_FOOTPRINT_M],
-        point_labels=[f"{l} × {w} m\n{l * w:,} m²" for l, w in KBR_FOOTPRINT_M],
+        point_labels=[f"{l} × {w} m\n{l * w:,} m²\n({l * w * SQFT_PER_M2:,.0f} sqft)"
+                      for l, w in KBR_FOOTPRINT_M],
         value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=11000,
         fit_label="Power-law fit",
-        labels_below=True,
+        labels_below=True, sqft=True,
     ),
     Chart(
         filename="duiker_footprint_scaling.png",
@@ -235,11 +250,12 @@ CHARTS = [
                   f"≈{DUIKER_STD_TRAIN_KTPA:.0f} ktpa at Duiker's implied {DUIKER_DAYS:.1f} d/yr "
                   "(12 ktpa = 36 tpd). Conversion, two-point fit, scaling factor and 100 ktpa value are "
                   "Gentari calculations;\n"
-                  "no accuracy class is stated for footprint."),
+                  "sqft conversion 1 m² = 10.764 sqft. No accuracy class is stated for footprint."),
         cap=[12, DUIKER_STD_TRAIN_KTPA], val=[900, 3660],
-        point_labels=["≈900 m²\n(12 ktpa, 36 tpd)", "122 × 30 m\n3,660 m² (276 tpd)"],
-        value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=5000,
-        fit_label="Two-point power-law fit",
+        point_labels=[f"≈900 m²\n({900 * SQFT_PER_M2:,.0f} sqft)\n12 ktpa, 36 tpd",
+                      f"122 × 30 m, 276 tpd\n3,660 m² ({3660 * SQFT_PER_M2:,.0f} sqft)"],
+        value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=6000,
+        fit_label="Two-point power-law fit", sqft=True,
         xticks=[0, 12, 24, 40, 68, 80, 92, 100],
     ),
 ]
