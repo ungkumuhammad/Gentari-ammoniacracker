@@ -25,6 +25,15 @@ python -m tools.cracker_model.build         # rebuild the workbook
 python -m tools.cracker_model.qa_recalc     # headless LibreOffice recalc + golden-value check
 ```
 
+## CAPEX & footprint sensitivity
+
+`Calc_Sensitivity` gives KBR and Duiker CAPEX and ISBL plot-footprint ranges
+at the required capacity and across a capacity grid, in m² and sqft. It
+applies two sensitivities: the scaling exponent n ± `SensExponentDelta`, and
+the licensor's CAPEX accuracy class. Both inputs are on the `Inputs` sheet.
+It also shows NPV/IRR at the CAPEX low/high. The method is in the sheet
+module's docstring and in `memory.md` (2026-09-30).
+
 ## Adding a 6th licensor or a new tolling party
 
 Add a `LicensorRecord` / `TollingPartyRecord` to `data.py` with full

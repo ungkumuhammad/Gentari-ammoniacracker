@@ -25,6 +25,11 @@ def test_kbr_interpolation_matches_sourced_values():
     assert not problems, "\n".join(problems)
 
 
+def test_sensitivity_logic():
+    problems = qa_recalc.verify_sensitivity_logic()
+    assert not problems, "\n".join(problems)
+
+
 def test_protected_sheets_are_locked(workbook):
     from tools.cracker_model import named_ranges as nr
     for name in nr.PROTECTED_SHEETS:

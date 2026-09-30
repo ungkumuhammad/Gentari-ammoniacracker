@@ -119,7 +119,7 @@ def build(wb) -> Worksheet:
     ci_gco2_mj_row = put(
         "Selected_CI_gCO2e_per_MJ",
         f"=IFERROR(D{selected_ci_row}*1000/{nr.LHV_H2_MJ_PER_KG},\"N/A\")",
-        f"= kgCO2/kgH2 * 1000 g/kg / {nr.LHV_H2_MJ_PER_KG} MJ/kg (LHV H2)",
+        f"gCO2e/MJ = kgCO2/kgH2 * 1000 g/kg / {nr.LHV_H2_MJ_PER_KG} MJ/kg (LHV H2)",
     )
     r += 1
 

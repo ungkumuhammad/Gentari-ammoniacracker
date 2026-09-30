@@ -24,6 +24,10 @@ ELECTRICITY_PRICE_USD_PER_MWH = "ElectricityPrice_USDperMWh"
 NG_PRICE_USD_PER_MWH = "NGPrice_USDperMWh"
 EURUSD_FX_RATE = "EURUSD_FXRate"
 
+# --- Inputs (Inputs sheet, sensitivity, ASSUMPTION) ---
+SENS_EXPONENT_DELTA = "SensExponentDelta"
+DUIKER_CAPEX_EXPONENT = "DuikerCapexExponent_ASSUMPTION"
+
 # --- Constants: KBR capacity/CAPEX interpolation ---
 KBR_CAP1, KBR_CAP2, KBR_CAP3, KBR_CAP4 = "KBR_Cap1", "KBR_Cap2", "KBR_Cap3", "KBR_Cap4"
 KBR_CAPEX1, KBR_CAPEX2, KBR_CAPEX3, KBR_CAPEX4 = "KBR_Capex1", "KBR_Capex2", "KBR_Capex3", "KBR_Capex4"
@@ -34,6 +38,20 @@ CASALE_PROJECT_LIFE_YR = "Casale_ProjectLife_yr"
 CAPACITY_REGRESSION_SLOPE_B = "CapacityRegressionSlope_b"
 CAPACITY_REGRESSION_INTERCEPT_A = "CapacityRegressionIntercept_a"
 CAPACITY_REGRESSION_RSQUARED = "CapacityRegressionRSquared"
+
+# --- Constants: CAPEX & footprint sensitivity ---
+KBR_FP1, KBR_FP2, KBR_FP3, KBR_FP4 = "KBR_Footprint1", "KBR_Footprint2", "KBR_Footprint3", "KBR_Footprint4"
+KBR_FP_REGRESSION_SLOPE_B = "KBR_FootprintRegressionSlope_b"
+KBR_FP_REGRESSION_INTERCEPT_A = "KBR_FootprintRegressionIntercept_a"
+KBR_FP_REGRESSION_RSQUARED = "KBR_FootprintRegressionRSquared"
+KBR_CAPEX_ACCURACY_PCT = "KBR_CapexAccuracy_pct"
+DUIKER_CAPEX_ACCURACY_PCT = "Duiker_CapexAccuracy_pct"
+DUIKER_BASE_CAP_KTPA = "Duiker_BaseCap_ktpa"
+DUIKER_STD_TRAIN_CAP_KTPA = "Duiker_StdTrainCap_ktpa"
+DUIKER_FP_BASE_M2 = "Duiker_Footprint_Base_m2"
+DUIKER_FP_STD_TRAIN_M2 = "Duiker_Footprint_StdTrain_m2"
+DUIKER_FP_EXPONENT = "Duiker_FootprintExponent"
+SQFT_PER_M2 = "SqftPerM2"
 
 # --- Constants: regional / currency ---
 REGIONAL_FACTOR_SELECTED = "RegionalFactorSelected"
@@ -68,6 +86,13 @@ ANNUAL_TOLLING_FEE = "AnnualTollingFee_Tolling"
 IRR_RESULT = "IRR_Result"
 NPV_RESULT = "NPV_Result"
 
+# --- CAPEX & footprint sensitivity results (selected licensor) ---
+CAPEX_SENS_LOW = "CAPEX_Sens_Low_MUSD"
+CAPEX_SENS_HIGH = "CAPEX_Sens_High_MUSD"
+FOOTPRINT_BASE_M2 = "Footprint_Base_m2"
+FOOTPRINT_SENS_LOW_M2 = "Footprint_Sens_Low_m2"
+FOOTPRINT_SENS_HIGH_M2 = "Footprint_Sens_High_m2"
+
 # --- Tables ---
 TBL_INPUTS = "tblInputs"
 TBL_LICENSORS = "tblLicensors"
@@ -87,6 +112,7 @@ SHEET_CONSTANTS = "Constants"
 SHEET_SETTINGS = "Settings"
 SHEET_CALC_CAPACITY_SIZING = "Calc_CapacitySizing"
 SHEET_CALC_CAPEX_ISBL_OSBL = "Calc_CAPEX_ISBL_OSBL"
+SHEET_CALC_SENSITIVITY = "Calc_Sensitivity"
 SHEET_CALC_OPEX = "Calc_OPEX"
 SHEET_CALC_TOLLING = "Calc_Tolling"
 SHEET_CALC_REGIONAL_FACTOR = "Calc_RegionalFactor"
@@ -98,7 +124,7 @@ SHEET_REPORT = "Report"
 
 SHEET_ORDER = [
     SHEET_COVER, SHEET_GUIDE, SHEET_INPUTS,
-    SHEET_CALC_CAPACITY_SIZING, SHEET_CALC_CAPEX_ISBL_OSBL, SHEET_CALC_OPEX,
+    SHEET_CALC_CAPACITY_SIZING, SHEET_CALC_CAPEX_ISBL_OSBL, SHEET_CALC_SENSITIVITY, SHEET_CALC_OPEX,
     SHEET_CALC_TOLLING, SHEET_CALC_REGIONAL_FACTOR, SHEET_CALC_CARBON_INTENSITY,
     SHEET_CALC_CASHFLOW_IRR, SHEET_DASHBOARD, SHEET_COMPARISON, SHEET_REPORT,
     SHEET_CONSTANTS, SHEET_SETTINGS,

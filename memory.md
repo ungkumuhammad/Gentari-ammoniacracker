@@ -385,6 +385,79 @@ admin-editable on the workbook's `Constants` sheet.
   the outstanding verification step before treating any cell value as
   confirmed correct.
 
+## CAPEX & Footprint Sensitivity — Workbook v1.1 (2026-09-30)
+
+Added `Calc_Sensitivity` to the workbook (`tools/cracker_model/sheets/calc_sensitivity.py`),
+at repo owner's request, so the scaling behind the deck charts is part of the model.
+Covers KBR and Duiker only: they are the only licensors with a CAPEX or footprint
+curve. Topsoe/Technip (single TCOE `80 x 80` m entry) and Casale (no data) show N/A.
+
+- **Method**:
+  - *Scaling exponent*: V(n ± d) = V_base × (C / C_anchor)^(±d). C_anchor is the
+    nearest licensor-quoted capacity in log terms. The swing is zero at a quoted
+    point and grows with distance from quoted data.
+  - *Accuracy class (CAPEX only)*: V × (1 ± acc). KBR Class V ±50% (§4.1), Duiker
+    ±40% (§4.1 Table 8).
+  - *Stacked*: exponent low × (1 − acc) to exponent high × (1 + acc). This is a
+    worst-case stack, not a confidence interval.
+  - *Footprint*: exponent swing only. **Neither KBR nor Duiker states an accuracy
+    class for plot area**, so none is applied (no invented band).
+- **Base curves** (same as the deck charts, reproduced at 100 ktpa: KBR US$234M,
+  Duiker €168M, KBR 8,231 m², Duiker 3,876 m²):
+  - KBR CAPEX and footprint use piecewise log-log interpolation inside 12–80 ktpa
+    (reproduces KBR's quoted values exactly). Outside that range they use the
+    global log-log fit (CAPEX n ≈ 0.52; footprint n ≈ 0.41, a ≈ 1,225.8, R² 0.9952).
+  - Duiker footprint uses the two-point fit, n ≈ 0.69 (12 ktpa / 900 m² and 92 ktpa /
+    3,660 m²).
+  - Duiker CAPEX = €47M × (C/12)^n, n = 0.6 **[ASSUMPTION]**.
+- **New ASSUMPTIONS** (yellow, on `Inputs`):
+  - `SensExponentDelta` = **±0.10** on every n. Not sourced: KBR's own pairwise
+    CAPEX exponents span only 0.50–0.55, and the Duiker exponents rest on 1–2
+    points, so ±0.10 is a round modelling choice. Set it to 0 to switch the
+    exponent sensitivity off.
+  - `DuikerCapexExponent_ASSUMPTION` = **0.6** (six-tenths rule, same as the
+    deck chart and the 100 ktpa Derived Assessment).
+- **Decision (this build, not yet confirmed by repo owner)**: the Duiker six-tenths
+  CAPEX is a **sensitivity view only**. The headline `CAPEX_Total_Own` / IRR stays
+  N/A for Duiker away from 12 ktpa, as in v1. Wiring it into the headline would
+  change v1's "no basis to scale Duiker" rule, so that is left for the repo owner
+  to decide.
+- **NPV / IRR at CAPEX low/high** (Own & Operate, KBR or Duiker):
+  - Total CAPEX low/high = `CAPEX_Total_Own` × (ISBL-basis low or high / base), so
+    OSBL % and the regional factor scale with it.
+  - NPV = NPV_Result + CAPEX_base − CAPEX_case, because Year 0 CAPEX is
+    undiscounted.
+  - IRR = RATE(life, annual net cash flow, −CAPEX). This equals the sheet's IRR()
+    because Years 1..N are level. Checked: at d = 0 it gives 28.6% at KBR 50 ktpa,
+    the same as `IRR_Result`.
+- **New sourced constants** (`Constants` sheet, `data.py`):
+  - KBR plot areas 3,500 / 4,400 / 7,125 / 7,500 m² (§3.6 L × W).
+  - KBR ±50% (§4.1); Duiker ±40% (§4.1 Table 8).
+  - Duiker 36 tpd and 276 tpd trains and 3,660 m² (§3.10).
+  - 1 ft = 0.3048 m (exact, international foot) → 10.7639 sqft/m².
+- **Checks**:
+  - `qa_recalc.verify_sensitivity_logic()` (also a pytest) re-derives the exponents,
+    confirms zero swing at every quoted point, and confirms the stacked range
+    brackets the base.
+  - Headless LibreOffice still cannot load files here. The new formulas were
+    evaluated with the Python `formulas` engine, run in the session scratchpad and
+    not added to the repo. Cases checked: KBR 12/50/150 ktpa, Duiker 12/50 ktpa,
+    Topsoe 50 ktpa, Tolling mode, and d = 0. All values matched the independent
+    Python / chart figures.
+- **Pre-existing issues found while checking (flagged)**:
+  - **Fixed**: two note cells (`Calc_CashFlow_IRR` revenue note,
+    `Calc_CarbonIntensity` gCO₂e/MJ note) began with "= ", so openpyxl wrote them as
+    invalid formulas. That would trigger an Excel repair prompt on open. The leading
+    "=" was reworded.
+  - **Not fixed**: when OPEX is N/A (e.g. KBR > 80 ktpa, Topsoe), the cash-flow
+    rows are text. `NPV()` skips them, so `NPV_Result` shows −CAPEX instead of N/A.
+    `Calc_Sensitivity` guards against this (NPV/IRR at CAPEX low/high show N/A),
+    but the headline `NPV_Result` still needs the same guard.
+  - **Not fixed**: Duiker at 12 ktpa gives a headline IRR ≈ 105%. Duiker's €2.9M/yr
+    OPEX (Table 9) covers utilities/catalyst/labour/maintenance and appears to
+    exclude ammonia feedstock, so revenue minus OPEX is overstated. Check before
+    using the Duiker IRR.
+
 ## Changelog
 
 - **2026-07-08** — Repo initialized: replicated `Licensor/`, `tcoedatabase/`,
@@ -525,3 +598,10 @@ admin-editable on the workbook's `Constants` sheet.
 - **2026-09-30** — Fast-forwarded `main` to `claude/capex-reference-table-pqneh6`
   (`fc2649e`): Duiker CAPEX chart, KBR/Duiker footprint charts (m² + sqft,
   capacity-labelled), `tools/licensor_charts.py`.
+- **2026-09-30** — Workbook v1.1: CAPEX and footprint sensitivity added to the
+  model (`Calc_Sensitivity`). It covers the scaling exponent (±`SensExponentDelta`)
+  and the licensor accuracy class, with a stacked range, for KBR and Duiker. It gives
+  m² and sqft, NPV/IRR at CAPEX low/high, and capacity grids. Results feed the
+  Dashboard and Report. See the "CAPEX & Footprint Sensitivity — Workbook v1.1"
+  section for the method, new assumptions, checks, and the pre-existing issues found
+  (the "= " note cells were fixed; NPV_Result with N/A OPEX was flagged).

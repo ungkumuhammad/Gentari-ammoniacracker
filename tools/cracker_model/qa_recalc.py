@@ -166,6 +166,57 @@ def verify_kbr_interpolation_logic() -> list[str]:
     return problems
 
 
+def _power_law_swing(capacity: float, anchors: list[float], delta: float) -> float:
+    """(C / nearest anchor in log terms)^delta -- mirrors calc_sensitivity.swing()."""
+    anchor = min(anchors, key=lambda a: abs(math.log(capacity / a)))
+    return (capacity / anchor) ** delta
+
+
+def verify_sensitivity_logic() -> list[str]:
+    """Independent re-derivation of the Calc_Sensitivity CAPEX/footprint maths."""
+    problems = []
+    delta = data.SENSITIVITY_EXPONENT_DELTA.value
+    kbr_caps = data.KBR_CAPACITIES_KTPA
+    fp_points = [(cap, data.KBR_FOOTPRINT_AREA_M2[cap].value) for cap in kbr_caps]
+    capex_points = [(cap, data.KBR_ISBL_CAPEX_MUSD[cap].value) for cap in kbr_caps]
+
+    for cap, (l, w) in data._KBR_FOOTPRINT_DIMS_M.items():
+        if data.KBR_FOOTPRINT_M[cap].value.replace(" ", "") != f"{l}x{w}":
+            problems.append(f"KBR footprint dims at {cap} ktpa disagree between KBR_FOOTPRINT_M and the area table")
+
+    _, n_fp, r2_fp = _global_regression_fit(fp_points)
+    if not (0.3 < n_fp < 0.6) or r2_fp < 0.95:
+        problems.append(f"KBR footprint fit n={n_fp:.4f}, R2={r2_fp:.4f} outside expected range")
+
+    base_ktpa = data.DUIKER_CAPACITY_KTPA
+    std_ktpa = data.DUIKER_STD_TRAIN_H2_TPD.value * base_ktpa / data.DUIKER_BASE_H2_TPD.value
+    n_dfp = (math.log(data.DUIKER_STD_TRAIN_FOOTPRINT_M2.value / data.DUIKER_FOOTPRINT_M2.value)
+             / math.log(std_ktpa / base_ktpa))
+    if not (0.5 < n_dfp < 0.8):
+        problems.append(f"Duiker footprint exponent n={n_dfp:.4f} outside expected range")
+
+    # Zero exponent swing at every quoted capacity; stacked range always brackets the base.
+    for anchors in (kbr_caps, [base_ktpa], [base_ktpa, std_ktpa]):
+        for cap in anchors:
+            if abs(_power_law_swing(cap, anchors, delta) - 1) > 1e-12:
+                problems.append(f"Exponent swing is not zero at quoted capacity {cap} ktpa")
+    for cap in data.SENSITIVITY_GRID_KTPA + [5, 150]:
+        base = _piecewise_loglog_capex(cap, capex_points) if kbr_caps[0] <= cap <= kbr_caps[-1] else None
+        if base is None:
+            a, b, _ = _global_regression_fit(capex_points)
+            base = a * cap ** b
+        sw = _power_law_swing(cap, kbr_caps, delta)
+        acc = data.KBR_CAPEX_ACCURACY_PCT.value / 100
+        lo, hi = base * min(sw, 1 / sw) * (1 - acc), base * max(sw, 1 / sw) * (1 + acc)
+        if not lo <= base <= hi:
+            problems.append(f"KBR CAPEX stacked range at {cap} ktpa does not bracket the base")
+
+    print(f"[qa_recalc] Sensitivity basis (independent Python re-derivation): KBR footprint "
+          f"n={n_fp:.4f} (R2={r2_fp:.4f}), Duiker footprint n={n_dfp:.4f}, Duiker std train "
+          f"{std_ktpa:.1f} ktpa, exponent swing +/-{delta}")
+    return problems
+
+
 def run() -> None:
     xlsx_path = str(Path(__file__).resolve().parents[2] / "output" / "Ammonia_Cracker_Sizing_Economics_v1.xlsx")
     if not Path(xlsx_path).exists():
@@ -188,6 +239,13 @@ def run() -> None:
     else:
         print("[qa_recalc] KBR piecewise interpolation & global regression logic verified "
               "(independent Python re-implementation matches all 4 sourced data points exactly).")
+
+    sens_problems = verify_sensitivity_logic()
+    if sens_problems:
+        all_problems.extend(sens_problems)
+    else:
+        print("[qa_recalc] CAPEX/footprint sensitivity logic verified (zero swing at quoted "
+              "points, stacked range brackets base).")
 
     recalc_values = attempt_soffice_recalc(xlsx_path)
     if recalc_values is None:

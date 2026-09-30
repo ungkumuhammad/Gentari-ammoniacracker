@@ -186,6 +186,17 @@ KBR_FOOTPRINT_M = {
     68: Fact("95 x 75", "m x m", Citation(KBR_DOC, "§3.6", KBR_REV)),
     80: Fact("100 x 75", "m x m", Citation(KBR_DOC, "§3.6", KBR_REV)),
 }
+# Plot areas behind KBR_FOOTPRINT_M: length x width as quoted in §3.6.
+_KBR_FOOTPRINT_DIMS_M = {12: (70, 50), 24: (80, 55), 68: (95, 75), 80: (100, 75)}
+KBR_FOOTPRINT_AREA_M2 = {
+    cap: Fact(l * w, "m2", Citation(KBR_DOC, "§3.6", KBR_REV,
+              f"{l} x {w} m quoted; area = length x width (Gentari arithmetic). "
+              "ISBL only -- offsites & utilities plot space excluded. No accuracy class stated."))
+    for cap, (l, w) in _KBR_FOOTPRINT_DIMS_M.items()
+}
+KBR_CAPEX_ACCURACY_PCT = Fact(50, "% (+/-)", Citation(KBR_DOC, "§4.1", KBR_REV,
+    "Indicative only, factored estimate, Class V +/-50%, Q3 2025, no forward escalation"))
+
 KBR_H2_PURITY_PCT = Fact(99.97, "mol%", Citation(KBR_DOC, "§3.1", KBR_REV, "99.5 wt%"))
 KBR_CATALYST_LIFE_YR = Fact(4, "years (expected; guaranteed 2 yr)", Citation(KBR_DOC, "§3.4", KBR_REV))
 
@@ -310,6 +321,25 @@ DUIKER_H2_PURITY_PCT = Fact(99.97, "mol%", Citation(DUIKER_DOC, "§3.x", DUIKER_
 DUIKER_ENERGY_EFFICIENCY_PCT = Fact(90, "% (LHV basis)", Citation(DUIKER_DOC, "§3.x / summary", DUIKER_REV, ">90%, end-of-run catalyst basis"))
 DUIKER_FOOTPRINT_M2 = Fact(900, "m2 (approx. 30 x 30 m)", Citation(DUIKER_DOC, "§3.10", DUIKER_REV,
     "Scaled down from the full-scale 276 tpd / 3660 m2 reference train"))
+DUIKER_CAPEX_ACCURACY_PCT = Fact(40, "% (+/-)", Citation(DUIKER_DOC, "§4.1 Table 8", DUIKER_REV,
+    "Capital Cost indication (+/-40%)"))
+DUIKER_BASE_H2_TPD = Fact(36, "t/d H2", Citation(DUIKER_DOC, "§3.10 / §4.1", DUIKER_REV,
+    "12 ktpa single customised train = 36 tpd, i.e. an implied 333.3 onstream d/yr"))
+DUIKER_STD_TRAIN_H2_TPD = Fact(276, "t/d H2", Citation(DUIKER_DOC, "§3.10", DUIKER_REV,
+    "Typical AHC train (4 reactors)"))
+DUIKER_STD_TRAIN_FOOTPRINT_M2 = Fact(3660, "m2 (122 x 30 m)", Citation(DUIKER_DOC, "§3.10", DUIKER_REV,
+    "Plot space of the 276 tpd standard train; excludes liquid NH3 storage and H2 compression beyond 50 barg"))
+DUIKER_CAPEX_SCALING_EXPONENT = Fact(
+    0.6, "dimensionless",
+    assumption=Assumption(
+        "Duiker quotes CAPEX at one capacity only (EUR47M @ 12 ktpa), so no Duiker "
+        "scaling factor can be fitted. The generic six-tenths rule (n = 0.6) is used "
+        "to scale it for the CAPEX sensitivity only -- it does not feed the headline "
+        "CAPEX_Total_Own, which stays N/A for Duiker away from 12 ktpa. Same method as "
+        "the deck chart duiker_capex_scaling.png and the 100 ktpa Derived Assessment.",
+        "memory.md: 2026-09-30 Duiker n = 0.6 assumption / CAPEX & footprint sensitivity entry",
+    ),
+)
 DUIKER_OUTPUT_PRESSURE_BARG = Fact(20, "barg", Citation(DUIKER_DOC, "§3.x", DUIKER_REV,
     "Battery-limit spec; PSA delivers at 50 barg, let down to 20 barg per project requirement"))
 DUIKER_PROJECT_LIFE_YR = NA("years", "Not stated in Duiker's Budgetary Proposal 122380 -- defaults to KBR's 25-yr basis "
@@ -461,6 +491,27 @@ EURUSD_FX_RATE = Fact(
     1.1448, "USD per EUR",
     assumption=Assumption(FX_SOURCE_NOTE, "memory.md: EUR/USD FX assumption, dated entry"),
 )
+
+# ---------------------------------------------------------------------------
+# CAPEX & footprint sensitivity
+# ---------------------------------------------------------------------------
+
+SENSITIVITY_EXPONENT_DELTA = Fact(
+    0.10, "dimensionless (+/- on n)",
+    assumption=Assumption(
+        "Swing applied to every CAPEX / footprint scaling exponent n in "
+        "Calc_Sensitivity (n - delta and n + delta). Not a sourced figure: KBR's own "
+        "pairwise CAPEX exponents only span 0.50-0.55, and the Duiker exponents rest on "
+        "one or two points, so +/-0.10 is a round modelling choice. User-editable on Inputs.",
+        "memory.md: 2026-09-30 CAPEX & footprint sensitivity entry",
+    ),
+)
+SENSITIVITY_GRID_KTPA = [12, 24, 40, 68, 80, 92, 100]  # evaluation points only, not data
+
+M_PER_FT = Fact(0.3048, "m/ft", Citation(
+    "External: International Yard and Pound Agreement (1959); NIST SP 811 Appendix B",
+    "definition of the international foot", "1959",
+    "Exact by definition, so 1 m2 = 1/0.3048^2 = 10.7639 sqft"))
 
 # ---------------------------------------------------------------------------
 # Shared engineering constants

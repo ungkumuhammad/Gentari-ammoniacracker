@@ -60,13 +60,18 @@ def build(wb) -> Worksheet:
     put("AnnualTollingFee_Tolling (MUSD/yr)", f"={nr.ANNUAL_TOLLING_FEE}")
     put("Unlevered IRR", f"={nr.IRR_RESULT}")
     put("NPV (MUSD)", f"={nr.NPV_RESULT}")
+    put("CAPEX_Total_Own range (MUSD, stacked sensitivity)",
+        f'=IFERROR(TEXT({nr.CAPEX_SENS_LOW},"#,##0.0")&" - "&TEXT({nr.CAPEX_SENS_HIGH},"#,##0.0"),"N/A")')
+    put("ISBL plot footprint (m2, base)", f"={nr.FOOTPRINT_BASE_M2}")
+    put("ISBL plot footprint range (m2)",
+        f'=IFERROR(TEXT({nr.FOOTPRINT_SENS_LOW_M2},"#,##0")&" - "&TEXT({nr.FOOTPRINT_SENS_HIGH_M2},"#,##0"),"N/A")')
     r += 1
 
     ws.cell(r, 2, "Revision")
     st.style_section_header(ws.cell(r, 2))
     ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=4)
     r += 1
-    ws.cell(r, 2, "Rev 1.0 -- Draft for internal review. See Settings for full version history.")
+    ws.cell(r, 2, "Rev 1.1 -- Draft for internal review. See Settings for full version history.")
     ws.cell(r, 2).font = st.body_font(italic=True)
     r += 2
 

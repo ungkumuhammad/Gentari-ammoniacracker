@@ -12,7 +12,7 @@ FUEL = nr.CRACKER_FUEL_MODE
 
 
 def build(wb, ci_rows: dict, cs_rows: dict, tolling_rows: dict,
-          regional_rows: dict, cashflow_rows: dict) -> Worksheet:
+          regional_rows: dict, cashflow_rows: dict, sens_rows: dict) -> Worksheet:
     ws = wb.create_sheet(nr.SHEET_DASHBOARD)
     ws.sheet_view.showGridLines = False
     ws.freeze_panes = "A2"
@@ -57,6 +57,28 @@ def build(wb, ci_rows: dict, cs_rows: dict, tolling_rows: dict,
     put("NPV_Result (MUSD, at DiscountRate_pct)", f"={nr.NPV_RESULT}")
     r += 1
 
+    sens = nr.SHEET_CALC_SENSITIVITY
+    stacked = sens_rows["case_rows"]["stacked"]
+    ws.cell(r, 2, "CAPEX & Footprint Sensitivity (see Calc_Sensitivity)")
+    st.style_section_header(ws.cell(r, 2))
+    ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=6)
+    r += 1
+    put("CAPEX_Total_Own low (MUSD, stacked)", f"={nr.CAPEX_SENS_LOW}",
+        "Scaling exponent n +/- d, then licensor accuracy class")
+    put("CAPEX_Total_Own high (MUSD, stacked)", f"={nr.CAPEX_SENS_HIGH}")
+    put("NPV @ CAPEX low / high (MUSD)",
+        f"=IFERROR(TEXT('{sens}'!$F${stacked},\"#,##0.0\")&\" / \"&TEXT('{sens}'!$G${stacked},\"#,##0.0\"),\"N/A\")")
+    put("IRR @ CAPEX low / high",
+        f"=IFERROR(TEXT('{sens}'!$H${stacked},\"0.0%\")&\" / \"&TEXT('{sens}'!$I${stacked},\"0.0%\"),\"N/A\")")
+    put("ISBL plot footprint base (m2)", f"={nr.FOOTPRINT_BASE_M2}")
+    put("ISBL plot footprint range (m2)",
+        f"=IFERROR(TEXT({nr.FOOTPRINT_SENS_LOW_M2},\"#,##0\")&\" - \"&TEXT({nr.FOOTPRINT_SENS_HIGH_M2},\"#,##0\"),\"N/A\")",
+        "Exponent swing only -- no accuracy class stated for footprint")
+    put("ISBL plot footprint range (sqft)",
+        f"=IFERROR(TEXT({nr.FOOTPRINT_SENS_LOW_M2}*{nr.SQFT_PER_M2},\"#,##0\")&\" - \"&"
+        f"TEXT({nr.FOOTPRINT_SENS_HIGH_M2}*{nr.SQFT_PER_M2},\"#,##0\"),\"N/A\")")
+    r += 1
+
     ws.cell(r, 2, "Key Performance Indicators")
     st.style_section_header(ws.cell(r, 2))
     ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=6)
@@ -88,6 +110,11 @@ def build(wb, ci_rows: dict, cs_rows: dict, tolling_rows: dict,
         ("Project life vs. licensor basis", f"='{nr.SHEET_CALC_CASHFLOW_IRR}'!$D${cashflow_rows['life_flag_row']}"),
         ("Tolling capacity constraint", f"='{nr.SHEET_CALC_TOLLING}'!$D${tolling_rows['warn_row']}"),
         ("Regional factor status", f"='{nr.SHEET_CALC_REGIONAL_FACTOR}'!$D${regional_rows['status_row']}"),
+        ("Footprint basis",
+         f'=IF({LIC}="KBR",\'{nr.SHEET_CALC_SENSITIVITY}\'!$L${sens_rows["kbr_fp"]},'
+         f'IF({LIC}="Duiker",\'{nr.SHEET_CALC_SENSITIVITY}\'!$L${sens_rows["duiker_fp"]},""))'),
+        ("Duiker CAPEX scaling",
+         f'=IF({LIC}="Duiker",\'{nr.SHEET_CALC_SENSITIVITY}\'!$L${sens_rows["duiker_capex"]},"")'),
     ]
     for label, formula in warning_rows:
         put(label, formula, style=st.style_extrapolation_flag)

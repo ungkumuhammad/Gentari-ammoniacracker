@@ -152,7 +152,31 @@ def build(wb) -> Worksheet:
     _row(ws, r, "Natural Gas Price (USD/MWh)", 30, name=nr.NG_PRICE_USD_PER_MWH,
          note="KBR's own cost-input assumption"); r += 1
     _row(ws, r, "EUR/USD FX Rate", data.EURUSD_FX_RATE.value, name=nr.EURUSD_FX_RATE,
-         note="ECB reference rate, 3 Jul 2026 snapshot -- admin-editable"); r += 1
+         note="ECB reference rate, 3 Jul 2026 snapshot -- admin-editable"); r += 2
+
+    # --- CAPEX & Footprint Sensitivity (ASSUMPTION) ---
+    ws.cell(r, 2, "CAPEX & Footprint Sensitivity (ASSUMPTION -- yellow)")
+    st.style_section_header(ws.cell(r, 2))
+    ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=4)
+    r += 1
+    delta_cell = _row(ws, r, "Scaling exponent swing (+/- on n)", data.SENSITIVITY_EXPONENT_DELTA.value,
+                      name=nr.SENS_EXPONENT_DELTA,
+                      note="Applied to every CAPEX/footprint exponent in Calc_Sensitivity -- not sourced")
+    dv_delta = DataValidation(type="decimal", operator="between", formula1="0", formula2="0.5")
+    dv_delta.error = "Enter a swing between 0 and 0.5."
+    dv_delta.errorTitle = "Invalid Input"
+    ws.add_data_validation(dv_delta)
+    dv_delta.add(delta_cell.coordinate)
+    r += 1
+    n_cell = _row(ws, r, "Duiker CAPEX scaling exponent n", data.DUIKER_CAPEX_SCALING_EXPONENT.value,
+                  name=nr.DUIKER_CAPEX_EXPONENT,
+                  note="Six-tenths rule -- Duiker quotes one CAPEX point, so n cannot be fitted")
+    dv_n = DataValidation(type="decimal", operator="between", formula1="0.1", formula2="1.5")
+    dv_n.error = "Enter an exponent between 0.1 and 1.5."
+    dv_n.errorTitle = "Invalid Input"
+    ws.add_data_validation(dv_n)
+    dv_n.add(n_cell.coordinate)
+    r += 1
 
     ws.sheet_properties.tabColor = st.COLOR_PRIMARY_DEEP_BLUE
     return ws

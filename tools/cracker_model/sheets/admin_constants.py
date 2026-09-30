@@ -352,6 +352,70 @@ def build(wb) -> Worksheet:
     st.style_reference(ws.cell(r, 2))
     r += 2
 
+    # --- CAPEX & footprint sensitivity basis ---
+    ws.cell(r, 2, "CAPEX & Footprint Sensitivity Basis (feeds Calc_Sensitivity)")
+    st.style_section_header(ws.cell(r, 2))
+    ws.merge_cells(start_row=r, start_column=2, end_row=r, end_column=8)
+    r += 1
+    fp_rows = []
+    for cap in data.KBR_CAPACITIES_KTPA:
+        fact = data.KBR_FOOTPRINT_AREA_M2[cap]
+        fp_rows.append([cap, fact.value, _citation_text(fact)])
+    fp_start = r
+    r = _add_table(ws, "tblKBRFootprintPoints", r, 2,
+                    ["Capacity_ktpa", "ISBL_Footprint_m2", "Citation"], fp_rows)
+    for i in range(len(data.KBR_CAPACITIES_KTPA)):
+        nr.register(wb, [nr.KBR_FP1, nr.KBR_FP2, nr.KBR_FP3, nr.KBR_FP4][i],
+                    f"'{nr.SHEET_CONSTANTS}'!$C${fp_start + 1 + i}")
+    fp_cap_rng = f"'{nr.SHEET_CONSTANTS}'!$B${fp_start + 1}:$B${fp_start + 4}"
+    fp_rng = f"'{nr.SHEET_CONSTANTS}'!$C${fp_start + 1}:$C${fp_start + 4}"
+
+    def put(label, value_or_fact, name=None, note=""):
+        nonlocal r
+        ws.cell(r, 2, label)
+        st.style_label(ws.cell(r, 2), bold=False)
+        if isinstance(value_or_fact, data.Fact):
+            _fact_cell(ws, r, 4, value_or_fact)
+            note = note or _citation_text(value_or_fact)
+        else:
+            ws.cell(r, 4, value_or_fact)
+            st.style_calculated(ws.cell(r, 4))
+        if note:
+            ws.cell(r, 6, note)
+            ws.cell(r, 6).font = st.body_font(italic=True, color=st.COLOR_SECONDARY_STEEL_GRAY)
+        if name:
+            nr.register(wb, name, f"'{nr.SHEET_CONSTANTS}'!$D${r}")
+        r += 1
+        return r - 1
+
+    put("KBR_FootprintRegressionSlope_b", f"=SLOPE(LN({fp_rng}),LN({fp_cap_rng}))",
+        nr.KBR_FP_REGRESSION_SLOPE_B, "Gentari log-log fit on KBR's 4 quoted plot areas (deck chart: n ~0.41)")
+    put("KBR_FootprintRegressionIntercept_a", f"=EXP(INTERCEPT(LN({fp_rng}),LN({fp_cap_rng})))",
+        nr.KBR_FP_REGRESSION_INTERCEPT_A, "m2 at 1 ktpa on the fitted curve")
+    put("KBR_FootprintRegressionRSquared", f"=RSQ(LN({fp_rng}),LN({fp_cap_rng}))",
+        nr.KBR_FP_REGRESSION_RSQUARED)
+    put("KBR_CapexAccuracy_pct", data.KBR_CAPEX_ACCURACY_PCT, nr.KBR_CAPEX_ACCURACY_PCT)
+    put("Duiker_CapexAccuracy_pct", data.DUIKER_CAPEX_ACCURACY_PCT, nr.DUIKER_CAPEX_ACCURACY_PCT)
+    base_tpd_row = put("Duiker_BaseTrain_tpd", data.DUIKER_BASE_H2_TPD)
+    std_tpd_row = put("Duiker_StdTrain_tpd", data.DUIKER_STD_TRAIN_H2_TPD)
+    put("Duiker_BaseCap_ktpa", data.DUIKER_CAPACITY_KTPA, nr.DUIKER_BASE_CAP_KTPA,
+        _citation_text(data.DUIKER_CAPEX_TOTAL_EUR_M).split(" -- ")[0] + " -- single quoted capacity (36 tpd)")
+    put("Duiker_StdTrainCap_ktpa (DERIVED)",
+        f"=D{std_tpd_row}*{nr.DUIKER_BASE_CAP_KTPA}/D{base_tpd_row}",
+        nr.DUIKER_STD_TRAIN_CAP_KTPA,
+        "276 tpd converted at Duiker's own implied 333.3 d/yr (12 ktpa = 36 tpd) -- Gentari arithmetic")
+    put("Duiker_Footprint_Base_m2", data.DUIKER_FOOTPRINT_M2, nr.DUIKER_FP_BASE_M2)
+    put("Duiker_Footprint_StdTrain_m2", data.DUIKER_STD_TRAIN_FOOTPRINT_M2, nr.DUIKER_FP_STD_TRAIN_M2)
+    put("Duiker_FootprintExponent (DERIVED)",
+        f"=LN({nr.DUIKER_FP_STD_TRAIN_M2}/{nr.DUIKER_FP_BASE_M2})"
+        f"/LN({nr.DUIKER_STD_TRAIN_CAP_KTPA}/{nr.DUIKER_BASE_CAP_KTPA})",
+        nr.DUIKER_FP_EXPONENT,
+        "Two-point fit (deck chart: n ~0.69). Duiker's 900 m2 is itself scaled down from the 276 tpd "
+        "train, so this exponent partly reflects Duiker's own scaling")
+    m_per_ft_row = put("Metre_per_ft", data.M_PER_FT)
+    put("SqftPerM2", f"=1/D{m_per_ft_row}^2", nr.SQFT_PER_M2, "1 m2 = 10.7639 sqft")
+    r += 1
+
     # --- shared engineering constants ---
     ws.cell(r, 2, "Shared Engineering Constants")
     st.style_section_header(ws.cell(r, 2))

@@ -14,7 +14,7 @@ from tools.cracker_model import named_ranges as nr
 from tools.cracker_model import validate_data
 from tools.cracker_model.sheets import (
     admin_constants, calc_capacity_sizing, calc_capex_isbl_osbl, calc_carbon_intensity,
-    calc_cashflow_irr, calc_opex, calc_regional_factor, calc_tolling, comparison,
+    calc_cashflow_irr, calc_opex, calc_regional_factor, calc_sensitivity, calc_tolling, comparison,
     cover, dashboard, guide, inputs, report, settings,
 )
 
@@ -40,7 +40,8 @@ def build_workbook() -> openpyxl.Workbook:
     ws_reg, reg_rows = calc_regional_factor.build(wb)
     ws_ci, ci_rows = calc_carbon_intensity.build(wb)
     ws_cf, cf_rows = calc_cashflow_irr.build(wb)
-    dashboard.build(wb, ci_rows, cs_rows, toll_rows, reg_rows, cf_rows)
+    ws_sens, sens_rows = calc_sensitivity.build(wb, cs_rows, cf_rows)
+    dashboard.build(wb, ci_rows, cs_rows, toll_rows, reg_rows, cf_rows, sens_rows)
     comparison.build(wb, cs_rows, capex_rows, opex_rows, ci_rows)
     report.build(wb)
     settings.build(wb)

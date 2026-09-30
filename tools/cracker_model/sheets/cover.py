@@ -16,7 +16,7 @@ def build(wb) -> Worksheet:
     ws.cell(r, 2, "Ammonia Cracker Capacity Sizing & Project Economics Tool")
     st.style_title(ws.cell(r, 2))
     r += 1
-    ws.cell(r, 2, "Version 1.0  |  Gentari Hydrogen Technical Center of Excellence")
+    ws.cell(r, 2, "Version 1.1  |  Gentari Hydrogen Technical Center of Excellence")
     ws.cell(r, 2).font = st.body_font(italic=True)
     r += 2
 
@@ -51,7 +51,7 @@ def build(wb) -> Worksheet:
 
     ws.cell(r, 2, "Version")
     st.style_label(ws.cell(r, 2))
-    ws.cell(r, 4, "1.0")
+    ws.cell(r, 4, "1.1")
     r += 1
     ws.cell(r, 2, "Release date")
     st.style_label(ws.cell(r, 2))

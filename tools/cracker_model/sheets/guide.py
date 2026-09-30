@@ -65,6 +65,15 @@ def build(wb) -> Worksheet:
         "No debt, tax, or depreciation schedule is modeled -- IRR is "
         "unlevered (CAPEX or tolling-fee outflow vs. net operating cash "
         "flow only).",
+        "Calc_Sensitivity gives CAPEX and ISBL plot-footprint ranges for KBR "
+        "and Duiker: scaling exponent n +/- SensExponentDelta (ASSUMPTION, "
+        "default 0.10, pivoting on the nearest quoted capacity) and, for CAPEX "
+        "only, the licensor's accuracy class (KBR +/-50%, Duiker +/-40%). "
+        "Stacked low/high multiplies the two -- a worst-case stack, not a "
+        "confidence interval. No accuracy class is stated for footprint.",
+        "Duiker CAPEX away from 12 ktpa is scaled with an ASSUMED exponent "
+        "(six-tenths rule, n = 0.6, editable on Inputs) in Calc_Sensitivity "
+        "only. The headline CAPEX_Total_Own stays N/A for Duiker away from 12 ktpa.",
     ])
     r = _section(ws, r, "Required inputs & units", [
         "All inputs are entered on the Inputs sheet only (light yellow = "
@@ -77,7 +86,8 @@ def build(wb) -> Worksheet:
         "Inputs -> Constants lookup -> Calc_CapacitySizing -> "
         "[Calc_CAPEX_ISBL_OSBL + Calc_OPEX] (Own & Operate) or Calc_Tolling "
         "(Tolling) -> Calc_RegionalFactor -> Calc_CarbonIntensity -> "
-        "Calc_CashFlow_IRR -> Dashboard -> Comparison -> Report.",
+        "Calc_CashFlow_IRR -> Calc_Sensitivity (CAPEX & footprint ranges, "
+        "NPV/IRR at CAPEX low/high) -> Dashboard -> Comparison -> Report.",
     ])
     r = _section(ws, r, "Output interpretation", [
         "N/A (red) means the selected licensor's source package does not "
@@ -109,7 +119,12 @@ def build(wb) -> Worksheet:
         "A: Casale's Dec-2025 package is technical-only -- no cost data "
         "exists for Casale at any capacity in this repo.",
         "Q: Why is Duiker locked to ~12 ktpa? A: Duiker's package provides "
-        "exactly one capacity point -- there is no basis to scale it.",
+        "exactly one capacity point -- there is no basis to scale it. "
+        "Calc_Sensitivity shows a six-tenths-scaled Duiker CAPEX, labeled "
+        "ASSUMPTION, but it does not feed the headline CAPEX or IRR.",
+        "Q: Why does footprint have no accuracy band? A: Neither KBR nor "
+        "Duiker states an accuracy class for plot area, so only the "
+        "scaling-exponent swing is applied.",
         "Q: Can I turn off the OSBL 55% assumption? A: Yes, edit "
         "KBR_OSBLPct_ASSUMPTION on the (password-protected) Constants sheet.",
     ])

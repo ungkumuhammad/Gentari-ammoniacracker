@@ -57,7 +57,7 @@ def build(wb) -> Worksheet:
     revenue_row = put(
         "Revenue_MUSD_per_yr (merchant sale)",
         f"={nr.OFFTAKE_H2_PRICE_USD_PER_KG}*{CAP}",
-        "= USD/kg x ktpa (1 ktpa H2 = 1,000,000 kg -> result in MM USD)",
+        "Revenue = USD/kg x ktpa (1 ktpa H2 = 1,000,000 kg -> result in MM USD)",
     )
     annual_ncf_row = put(
         "AnnualNetCashFlow_MUSD_per_yr",
@@ -127,5 +127,6 @@ def build(wb) -> Worksheet:
     npv_row = r - 1
     nr.register(wb, nr.NPV_RESULT, f"'{nr.SHEET_CALC_CASHFLOW_IRR}'!$D${npv_row}")
 
-    rows = {"life_flag_row": life_flag_row, "irr_row": irr_row, "npv_row": npv_row}
+    rows = {"life_flag_row": life_flag_row, "irr_row": irr_row, "npv_row": npv_row,
+            "annual_ncf_row": annual_ncf_row}
     return ws, rows

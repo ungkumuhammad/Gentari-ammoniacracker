@@ -48,5 +48,13 @@ def build(wb) -> Worksheet:
                    "capacity-sizing/economics plan. Known v1 deviation: classic "
                    "INDEX/MATCH/IFERROR formulas used instead of mdlguideline.md §7's "
                    "preferred LET()/LAMBDA() -- see mdlguideline.md §7 and memory.md.")
+    r += 1
+    ws.cell(r, 2, "1.1")
+    ws.cell(r, 3, "2026-09-30 -- Added Calc_Sensitivity: CAPEX and ISBL plot-footprint "
+                   "sensitivity (scaling exponent +/- swing, licensor accuracy class, stacked "
+                   "envelope) for KBR and Duiker, in m2 and sqft, NPV/IRR at CAPEX low/high, "
+                   "and capacity grids. New Inputs: SensExponentDelta, "
+                   "DuikerCapexExponent_ASSUMPTION. See memory.md 2026-09-30.")
+    ws.cell(r, 3).alignment = st.Alignment(wrap_text=True, vertical="top")
 
     return ws
