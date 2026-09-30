@@ -635,3 +635,10 @@ admin-editable on the workbook's `Constants` sheet.
   a layout). Footprint fits reuse the KBR §3.6 and Duiker §3.10 data of `licensor_charts.py`. NG carbon factor
   2.752 kg CO₂/kg NG derived from KBR I.A §5 composition and matches I.E. Flag: Duiker NG-fired mass balance ≈0.24
   (from its 90.6 % efficiency) vs stated 0.21 kgCO₂/kgH₂. Not reconciled.
+
+- **2026-09-30 (correction)** — The Duiker NG-fired CO₂ "discrepancy" logged above (≈0.24 vs 0.21) was an artefact of
+  applying the KBR NG carbon factor to Duiker's N₂-rich gas. Using Duiker Table 6's own fuel composition (145 kg/h per
+  1,500 kg/h H₂, 2.127 kg CO₂/kg NG) the mass balance gives 0.206 kgCO₂/kgH₂, which agrees with the stated 0.21. No
+  Duiker CO₂ discrepancy remains. Open minor point: Duiker's NG quantity in the model's NG tile (≈0.076 kg/kg H₂, back-derived
+  from 0.21 with the KBR factor) differs from Table 6 (0.097 kg/kg H₂). The cracker model's process flow now follows Duiker
+  §3.2/§3.6 when the Duiker basis is selected.
