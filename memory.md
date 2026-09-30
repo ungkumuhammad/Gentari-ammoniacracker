@@ -519,3 +519,6 @@ admin-editable on the workbook's `Constants` sheet.
   80,729 sqft at 12/24/68/80 ktpa, Area ≈ 13,194 × ktpa^0.41 → ≈88,595 sqft @
   100 ktpa; Duiker ≈9,688 sqft @ 12 ktpa, 39,396 sqft @ 276 tpd,
   Area ≈ 1,750 × ktpa^0.69 → ≈41,724 sqft @ 100 ktpa [all DERIVED].
+- **2026-09-30** — Footprint chart labels now state the capacity next to each
+  m²/sqft value (KBR 12/24/68/80 ktpa; Duiker 12 ktpa (36 tpd) and ≈92 ktpa
+  (276 tpd)). All four charts label the extrapolated point "100 ktpa".

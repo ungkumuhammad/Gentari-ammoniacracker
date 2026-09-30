@@ -57,6 +57,7 @@ class Chart:
     vline: tuple = None        # (x, label) reference marker
     xticks: list = field(default_factory=lambda: [0, 12, 24, 40, 68, 80, 100])
     labels_below: bool = False  # put point labels below-right of the marker
+    label_pos: list = None      # per-point override: "ul" above-left, "br" below-right, "ac"/"ah" above-centre (near/high)
     sqft: bool = False          # footprint charts: also show ft² (labels, formula, right axis)
     legend_anchor: tuple = (1.0, 0.0)
 
@@ -103,14 +104,20 @@ def draw(ch: Chart) -> dict:
     ax.scatter([EXTRAP_KTPA], [extrap], s=110, facecolor=SURFACE, edgecolor=SECONDARY,
                linewidth=2, zorder=4)
 
-    for xi, yi, lab in zip(x, y, ch.point_labels):
-        if ch.labels_below:
+    placements = {"ul": ((-12, 12), "right", "bottom"), "br": ((12, -12), "left", "top"),
+                  "ac": ((0, 16), "center", "bottom"), "ah": ((0, 40), "center", "bottom")}
+    for i, (xi, yi, lab) in enumerate(zip(x, y, ch.point_labels)):
+        if ch.label_pos:
+            off, ha, va = placements[ch.label_pos[i]]
+            ax.annotate(lab, (xi, yi), xytext=off, textcoords="offset points",
+                        ha=ha, va=va, fontsize=12, fontweight="bold", color=INK)
+        elif ch.labels_below:
             ax.annotate(lab, (xi, yi), xytext=(12, -12), textcoords="offset points",
                         ha="left", va="top", fontsize=12, fontweight="bold", color=INK)
         else:
             ax.annotate(lab, (xi, yi), xytext=(-12, 12), textcoords="offset points",
                         ha="right", fontsize=12, fontweight="bold", color=INK)
-    extrap_txt = f"≈{ch.value_fmt.format(extrap)}"
+    extrap_txt = f"{EXTRAP_KTPA} ktpa\n≈{ch.value_fmt.format(extrap)}"
     if ch.sqft:
         extrap_txt += f"\n≈{extrap * SQFT_PER_M2:,.0f} sqft"
     ax.annotate(f"{extrap_txt}\n(extrapolated)", (EXTRAP_KTPA, extrap),
@@ -231,9 +238,10 @@ CHARTS = [
                   "Areas (length × width), sqft conversion (1 m² = 10.764 sqft), fit, scaling factor and "
                   "100 ktpa value are Gentari calculations from KBR's quoted plot dimensions."),
         cap=KBR_CAP, val=[m2(d) for d in KBR_FOOTPRINT_M],
-        point_labels=[f"{l} × {w} m\n{l * w:,} m²\n({l * w * SQFT_PER_M2:,.0f} sqft)"
-                      for l, w in KBR_FOOTPRINT_M],
-        value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=11000,
+        point_labels=[f"{c} ktpa\n{l} × {w} m\n{l * w:,} m²\n({l * w * SQFT_PER_M2:,.0f} sqft)"
+                      for c, (l, w) in zip(KBR_CAP, KBR_FOOTPRINT_M)],
+        label_pos=["ah", "br", "br", "ac"],
+        value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=12000,
         fit_label="Power-law fit",
         labels_below=True, sqft=True,
     ),
@@ -252,8 +260,9 @@ CHARTS = [
                   "Gentari calculations;\n"
                   "sqft conversion 1 m² = 10.764 sqft. No accuracy class is stated for footprint."),
         cap=[12, DUIKER_STD_TRAIN_KTPA], val=[900, 3660],
-        point_labels=[f"≈900 m²\n({900 * SQFT_PER_M2:,.0f} sqft)\n12 ktpa, 36 tpd",
-                      f"122 × 30 m, 276 tpd\n3,660 m² ({3660 * SQFT_PER_M2:,.0f} sqft)"],
+        point_labels=[f"12 ktpa (36 tpd)\n≈900 m²\n({900 * SQFT_PER_M2:,.0f} sqft)",
+                      f"≈{DUIKER_STD_TRAIN_KTPA:.0f} ktpa (276 tpd): 122 × 30 m\n"
+                      f"3,660 m² ({3660 * SQFT_PER_M2:,.0f} sqft)"],
         value_fmt="{:,.0f} m²", unit="Area (m²)", ylim=6000,
         fit_label="Two-point power-law fit", sqft=True,
         xticks=[0, 12, 24, 40, 68, 80, 92, 100],
