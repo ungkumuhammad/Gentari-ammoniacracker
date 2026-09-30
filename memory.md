@@ -678,3 +678,8 @@ admin-editable on the workbook's `Constants` sheet.
   into `claude/capex-reference-table-pqneh6`, then fast-forwarded `main`: brings
   the Duiker and KBR block flow diagrams to `main`. The only conflict was
   in this changelog; both sides' entries are kept.
+
+- **2026-09-30** — The cracker model (frontendengineeringmodel) process-flow panel now draws the KBR and Duiker block
+  diagrams merged in `tcoedatabase/figures/` when the matching basis is selected (Custom keeps its own diagram). Same
+  caveats as the PNGs: Duiker's drawing is reconstructed from text with an indicative heat-exchanger network; KBR's is the
+  clean-fuel layout with fuel streams toggled per mode, an adaptation, not KBR's per-mode flow sheet.
