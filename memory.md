@@ -608,3 +608,12 @@ admin-editable on the workbook's `Constants` sheet.
   workbook for OSBL equipment sizing at 12 / 24 / 80 / 160 kTPA. See the
   entry under "KBR OSBL Equipment Sizing — 12 kTPA" for the scaling rules
   (S1–S4), the basis change and the verification.
+- **2026-09-30** — Repo owner asked for the OSBL workbook to be **unprotected**:
+  all sheet protection has been removed from `tools/kbr_osbl_workbook.py`. This
+  deviates from `mdlguideline.md` §12 at the owner's request. The owner also
+  asked what the emergency-power ×2 means. It is recorded, on Inputs and in
+  the Guide, as a **load allowance, not redundancy**: I.F Note 7 excludes
+  cooling tower pumps and fans, the N₂ generator, lighting, buildings and
+  instruments from the 540 kW. I.H lists one package (111-L, quantity 1), so
+  it is one 1,080 kWe unit, not 2 × 540 kW. N+1 genset redundancy would be a
+  separate, still-open decision.
