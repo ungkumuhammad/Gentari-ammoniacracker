@@ -629,3 +629,9 @@ admin-editable on the workbook's `Constants` sheet.
   12 / 24 / 80 / 160 kTPA (genset 1,080 / 1,929 / 6,121 / 12,241 kWe). Between anchors, power / NG / NH₃ / H₂
   are interpolated linearly from I.E, an added assumption. If the workbook rules change, update that module too.
   The same commit adds an NG price unit dropdown (USD/MWh, USD/MMBtu) and a user-defined Custom fuel mode.
+
+- **2026-09-30** — Cracker model (frontendengineeringmodel) technical sizing now shows ISBL + OSBL plot footprint
+  and a CO₂ mass balance. **ASSUMPTION: OSBL plot area = 50 % of ISBL** (no OSBL area in any package; replace with
+  a layout). Footprint fits reuse the KBR §3.6 and Duiker §3.10 data of `licensor_charts.py`. NG carbon factor
+  2.752 kg CO₂/kg NG derived from KBR I.A §5 composition and matches I.E. Flag: Duiker NG-fired mass balance ≈0.24
+  (from its 90.6 % efficiency) vs stated 0.21 kgCO₂/kgH₂. Not reconciled.
