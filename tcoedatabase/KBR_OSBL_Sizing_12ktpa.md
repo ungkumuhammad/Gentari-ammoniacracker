@@ -15,6 +15,14 @@ purchase specification.
   from that script, so rerun it after any change to an input.
 - **Date:** 2026-09-30
 
+> **Superseded for multi-capacity work (2026-09-30):** the Excel workbook
+> `output/KBR_OSBL_Equipment_Sizing.xlsx` (build: `python tools/kbr_osbl_workbook.py`)
+> covers 12, 24, 80 and 160 kTPA with live formulas. For consistency across capacities
+> it takes the flare proxy and H₂ metering from **I.E** (all capacities) rather than
+> I.C (12 kTPA only). At 12 kTPA that gives a flare of **11,319 kg/h** (I.E NH₃ feed
+> 10,290 kg/h, highest-feed mode; this page shows ~10,000) and H₂ metering of
+> **1,569 kg/h** (this page shows 1,579). Everything else at 12 kTPA agrees within rounding.
+
 ## KBR source documents
 
 | Ref | Document | KBR Doc No. | Used for |

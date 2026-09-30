@@ -301,6 +301,43 @@ figures below that are not directly quoted are explicitly labeled
   heater, off-spec tank 211-F (service undefined), oil-water package
   (rainfall), ammoniacal drain drum/pumps (ISBL inventories not published).
 
+- **2026-09-30 — Excel workbook, 12 / 24 / 80 / 160 kTPA.** The repo owner asked
+  for the sizing in Excel, with sheets for 24, 80 and 160 kTPA. Generator:
+  `tools/kbr_osbl_workbook.py`. Output: `output/KBR_OSBL_Equipment_Sizing.xlsx`
+  (git-ignored, regenerate). Sheets: Cover, Guide, Inputs (yellow, named
+  ranges), KBR_Data (cited, protected), Summary, and one sheet per capacity
+  (sized list plus documented calculations). All results are live formulas.
+  **Scaling rules, all ASSUMPTIONS, because KBR's I.F utility maxima exist for
+  12 kTPA only:**
+  - **S1:** power and NG = I.E normal at that capacity × the I.F max/normal
+    ratio at 12 kTPA (540/487; 450/418).
+  - **S2:** CW and demin = I.F 12 kTPA max × (capacity ÷ 12). Supported by the
+    hub §3.3 constant ratios, 25 and 0.1 t/t H₂.
+  - **S3:** plant air, instrument air and N₂ = I.F 12 kTPA × (capacity ÷ 12).
+    Likely conservative.
+  - **S4:** 160 kTPA = 80 kTPA × 2. This is above KBR's largest published
+    case; KBR's single-train ceiling of ~1,200 MTPD is to be confirmed.
+  - Power and NH₃ feed use the highest published firing mode. At 24 kTPA
+    only the 100% NG mode is published.
+  - Headcount (30) is one input for all capacities; the owner is to confirm.
+  - I.H equipment quantities are kept at every capacity.
+  **Basis change vs the 12 kTPA markdown:** the flare proxy and H₂ metering
+  now come from I.E, giving 11,319 kg/h (was ~10,000) and 1,569 kg/h (was
+  1,579) at 12 kTPA.
+  **Verification:** LibreOffice recalculation still fails in this container
+  (even on a trivial file; see Assumptions & Data Gaps). All 707 formulas
+  were instead evaluated with pycel on a scratch copy with the named ranges
+  flattened (pycel 1.0b30 cannot read openpyxl 3.1 defined names): 0 errors,
+  and the 12 kTPA results match `kbr_osbl_sizing_12ktpa.py`. Opening in real
+  Excel is the remaining check.
+  **Headline results at 12 / 24 / 80 / 160 kTPA:**
+  - Genset: 1,080 / 1,929 / 6,121 / 12,241 kWe
+  - Diesel tank: 6 / 11 / 34 / 67 m³
+  - CW: 44 / 88 / 293 / 587 m³/h
+  - Raw water tank (excluding fire reserve): 39 / 74 / 238 / 473 m³
+  - Flare: 11.3 / 19.9 / 75.3 / 150.6 t/h
+  - H₂ export line: DN150 / DN200 / DN300 / DN450
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -567,3 +604,7 @@ admin-editable on the workbook's `Constants` sheet.
   equipment list (I.H) for 12 kTPA from I.F/I.C/I.E/I.A. The emergency power
   method was set by the repo owner. See "KBR OSBL Equipment Sizing — 12 kTPA"
   above for the assumptions, the discrepancies and the TBD items.
+- **2026-09-30** — Added `tools/kbr_osbl_workbook.py`, which builds the Excel
+  workbook for OSBL equipment sizing at 12 / 24 / 80 / 160 kTPA. See the
+  entry under "KBR OSBL Equipment Sizing — 12 kTPA" for the scaling rules
+  (S1–S4), the basis change and the verification.
