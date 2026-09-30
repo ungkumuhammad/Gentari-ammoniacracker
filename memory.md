@@ -522,3 +522,6 @@ admin-editable on the workbook's `Constants` sheet.
 - **2026-09-30** — Footprint chart labels now state the capacity next to each
   m²/sqft value (KBR 12/24/68/80 ktpa; Duiker 12 ktpa (36 tpd) and ≈92 ktpa
   (276 tpd)). All four charts label the extrapolated point "100 ktpa".
+- **2026-09-30** — Fast-forwarded `main` to `claude/capex-reference-table-pqneh6`
+  (`fc2649e`): Duiker CAPEX chart, KBR/Duiker footprint charts (m² + sqft,
+  capacity-labelled), `tools/licensor_charts.py`.
