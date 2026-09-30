@@ -264,6 +264,80 @@ figures below that are not directly quoted are explicitly labeled
     `kbr_100ktpa_sizing.pdf`). Both shown in the reference table with their
     method; not a data error, but pick one per deliverable and say which.
 
+## KBR OSBL Equipment Sizing — 12 kTPA (2026-09-30)
+
+- Repo owner asked for the KBR OSBL equipment list (I.H, Units 101–114) to be
+  sized for 12 kTPA from KBR's utility summary (I.F). Deliverable:
+  `tcoedatabase/KBR_OSBL_Sizing_12ktpa.md`; arithmetic in
+  `tools/kbr_osbl_sizing_12ktpa.py` [all results DERIVED].
+- **Decision (repo owner): emergency power method.** Basis = I.F max power
+  540 kW × 2 (I.F Note 7 excludes OSBL/intermittent users) = 1,080 kWe;
+  24 h backup; 50% engine efficiency; diesel LHV. Result: 1,350 kVA
+  @ 0.8 pf, 4,340 kg diesel / 5.3 m³ net / 6 m³ nominal tank (LHV 43.0 MJ/kg
+  IPCC 2006; density 820 kg/m³ EN 590 low end).
+- **Flagged:** I.F **Note 9** gives KBR's own emergency backup estimate as
+  **0.3 MW** (L.O. pumps, instrumentation, MOVs), 3.6× below the owner's
+  basis. On 300 kW the 24 h tank would be 1.5 m³ net. At 40% genset
+  efficiency the owner-basis tank rises to 6.6 m³ net. Not reconciled.
+- **Assumptions adopted (A1–A14 in the deliverable):** +10% margin on I.F
+  maximum flows; 24 h storage autonomy with net/nominal 0.9 (extends the
+  owner's 24 h diesel basis to all tanks); CT cycles of concentration 5;
+  demin recovery 80%; headcount 30 and 2 simultaneous safety showers
+  (owner to confirm); heatless IA dryer with 15% purge; IA receiver hold-up
+  15 min, 7.5 → 4.0 barg; start-up N₂ peak lasting 24 h; H₂ export velocity
+  ≤ 20 m/s; governing flare case = full cracked gas (proxy until a relief
+  study exists).
+- **KBR discrepancies found (flagged, not corrected):** CW supply temperature
+  25 °C in I.F vs 30 °C in I.A/I.D, and 25 °C is below the ≈25.2 °C design
+  wet bulb (28 °C / 80% RH per I.A, Stull formula), so 30 °C was used. CW
+  pressures differ across I.A (2.0 supply / 4.0 return, apparently
+  inverted), I.D (4.0 supply) and I.F (5.0 / 3.5). I.F demin 245 kg/h vs
+  hub 0.1 t/t H₂ ≈ 143 kg/h. I.F CW 30.1 t/h vs hub 25 t/t ≈ 35.7 t/h. NG
+  pressure 7.5 (I.F) vs 7 barg (I.A). H₂ rate 1,435 (I.C) vs 1,426 kg/h
+  (I.E). I.H: 161-JA/B under Fire Water labelled "Service Water Pumps";
+  151-JA/B quantity 1 despite A/B tag; 132-JA/B and 221-JA/B may duplicate.
+- **Not sizable from repo data (TBD):** fire water (161-JA/B and the fire
+  reserve, likely held in 121-F since Unit 106 has no tank), flare KO drum
+  heater, off-spec tank 211-F (service undefined), oil-water package
+  (rainfall), ammoniacal drain drum/pumps (ISBL inventories not published).
+
+- **2026-09-30 — Excel workbook, 12 / 24 / 80 / 160 kTPA.** The repo owner asked
+  for the sizing in Excel, with sheets for 24, 80 and 160 kTPA. Generator:
+  `tools/kbr_osbl_workbook.py`. Output: `output/KBR_OSBL_Equipment_Sizing.xlsx`
+  (git-ignored, regenerate). Sheets: Cover, Guide, Inputs (yellow, named
+  ranges), KBR_Data (cited, protected), Summary, and one sheet per capacity
+  (sized list plus documented calculations). All results are live formulas.
+  **Scaling rules, all ASSUMPTIONS, because KBR's I.F utility maxima exist for
+  12 kTPA only:**
+  - **S1:** power and NG = I.E normal at that capacity × the I.F max/normal
+    ratio at 12 kTPA (540/487; 450/418).
+  - **S2:** CW and demin = I.F 12 kTPA max × (capacity ÷ 12). Supported by the
+    hub §3.3 constant ratios, 25 and 0.1 t/t H₂.
+  - **S3:** plant air, instrument air and N₂ = I.F 12 kTPA × (capacity ÷ 12).
+    Likely conservative.
+  - **S4:** 160 kTPA = 80 kTPA × 2. This is above KBR's largest published
+    case; KBR's single-train ceiling of ~1,200 MTPD is to be confirmed.
+  - Power and NH₃ feed use the highest published firing mode. At 24 kTPA
+    only the 100% NG mode is published.
+  - Headcount (30) is one input for all capacities; the owner is to confirm.
+  - I.H equipment quantities are kept at every capacity.
+  **Basis change vs the 12 kTPA markdown:** the flare proxy and H₂ metering
+  now come from I.E, giving 11,319 kg/h (was ~10,000) and 1,569 kg/h (was
+  1,579) at 12 kTPA.
+  **Verification:** LibreOffice recalculation still fails in this container
+  (even on a trivial file; see Assumptions & Data Gaps). All 707 formulas
+  were instead evaluated with pycel on a scratch copy with the named ranges
+  flattened (pycel 1.0b30 cannot read openpyxl 3.1 defined names): 0 errors,
+  and the 12 kTPA results match `kbr_osbl_sizing_12ktpa.py`. Opening in real
+  Excel is the remaining check.
+  **Headline results at 12 / 24 / 80 / 160 kTPA:**
+  - Genset: 1,080 / 1,929 / 6,121 / 12,241 kWe
+  - Diesel tank: 6 / 11 / 34 / 67 m³
+  - CW: 44 / 88 / 293 / 587 m³/h
+  - Raw water tank (excluding fire reserve): 39 / 74 / 238 / 473 m³
+  - Flare: 11.3 / 19.9 / 75.3 / 150.6 t/h
+  - H₂ export line: DN150 / DN200 / DN300 / DN450
+
 ## Open Questions
 
 - **RESOLVED 2026-07-08** — ~~`Licensor/technip-offer-lbc-tolling.md` is
@@ -525,6 +599,53 @@ admin-editable on the workbook's `Constants` sheet.
 - **2026-09-30** — Fast-forwarded `main` to `claude/capex-reference-table-pqneh6`
   (`fc2649e`): Duiker CAPEX chart, KBR/Duiker footprint charts (m² + sqft,
   capacity-labelled), `tools/licensor_charts.py`.
+- **2026-09-30** — Added `tcoedatabase/KBR_OSBL_Sizing_12ktpa.md` and
+  `tools/kbr_osbl_sizing_12ktpa.py`: preliminary sizing of KBR's OSBL
+  equipment list (I.H) for 12 kTPA from I.F/I.C/I.E/I.A. The emergency power
+  method was set by the repo owner. See "KBR OSBL Equipment Sizing — 12 kTPA"
+  above for the assumptions, the discrepancies and the TBD items.
+- **2026-09-30** — Added `tools/kbr_osbl_workbook.py`, which builds the Excel
+  workbook for OSBL equipment sizing at 12 / 24 / 80 / 160 kTPA. See the
+  entry under "KBR OSBL Equipment Sizing — 12 kTPA" for the scaling rules
+  (S1–S4), the basis change and the verification.
+- **2026-09-30** — Repo owner asked for the OSBL workbook to be **unprotected**:
+  all sheet protection has been removed from `tools/kbr_osbl_workbook.py`. This
+  deviates from `mdlguideline.md` §12 at the owner's request. The owner also
+  asked what the emergency-power ×2 means. It is recorded, on Inputs and in
+  the Guide, as a **load allowance, not redundancy**: I.F Note 7 excludes
+  cooling tower pumps and fans, the N₂ generator, lighting, buildings and
+  instruments from the 540 kW. I.H lists one package (111-L, quantity 1), so
+  it is one 1,080 kWe unit, not 2 × 540 kW. N+1 genset redundancy would be a
+  separate, still-open decision.
+- **2026-09-30** — Fast-forwarded `main` to `claude/affectionate-johnson-pveubj`
+  at the repo owner's request. This brings in the KBR OSBL sizing: the 12 kTPA
+  markdown and script, the 12/24/80/160 kTPA workbook generator, and the
+  unprotect / ×2 clarification.
+
+- **2026-09-30** — The OSBL equipment list (I.H) and the sizing rules of
+  `tools/kbr_osbl_workbook.py` (S1–S4, A1–A14) were ported to JavaScript in
+  `ungkumuhammad/frontendengineeringmodel`, `Dashboard/public/modules/nh3-cracker-design.html`
+  (new "OSBL equipment" tab), so the list follows the model's H₂ capacity. The port reproduces the workbook at
+  12 / 24 / 80 / 160 kTPA (genset 1,080 / 1,929 / 6,121 / 12,241 kWe). Between anchors, power / NG / NH₃ / H₂
+  are interpolated linearly from I.E, an added assumption. If the workbook rules change, update that module too.
+  The same commit adds an NG price unit dropdown (USD/MWh, USD/MMBtu) and a user-defined Custom fuel mode.
+
+- **2026-09-30** — Cracker model (frontendengineeringmodel) technical sizing now shows ISBL + OSBL plot footprint
+  and a CO₂ mass balance. **ASSUMPTION: OSBL plot area = 50 % of ISBL** (no OSBL area in any package; replace with
+  a layout). Footprint fits reuse the KBR §3.6 and Duiker §3.10 data of `licensor_charts.py`. NG carbon factor
+  2.752 kg CO₂/kg NG derived from KBR I.A §5 composition and matches I.E. Flag: Duiker NG-fired mass balance ≈0.24
+  (from its 90.6 % efficiency) vs stated 0.21 kgCO₂/kgH₂. Not reconciled.
+
+- **2026-09-30 (correction)** — The Duiker NG-fired CO₂ "discrepancy" logged above (≈0.24 vs 0.21) was an artefact of
+  applying the KBR NG carbon factor to Duiker's N₂-rich gas. Using Duiker Table 6's own fuel composition (145 kg/h per
+  1,500 kg/h H₂, 2.127 kg CO₂/kg NG) the mass balance gives 0.206 kgCO₂/kgH₂, which agrees with the stated 0.21. No
+  Duiker CO₂ discrepancy remains. Open minor point: Duiker's NG quantity in the model's NG tile (≈0.076 kg/kg H₂, back-derived
+  from 0.21 with the KBR factor) differs from Table 6 (0.097 kg/kg H₂). The cracker model's process flow now follows Duiker
+  §3.2/§3.6 when the Duiker basis is selected.
+
+- **2026-09-30** — Repo owner set the cracker model's **OSBL plot area default to 200 % of ISBL** (was my 50 %
+  placeholder). Still an assumption: no OSBL area in any package. Footprints in the model are now quoted sqft first.
+
 - **2026-09-30** — Added `tcoedatabase/figures/duiker_ahc_block_diagram.png`
   (generated by `tools/duiker_block_diagram.py`): simplified block flow
   diagram of Duiker's AHC. Duiker's own Figure 3 BFD is an image lost in the
@@ -553,3 +674,7 @@ admin-editable on the workbook's `Constants` sheet.
   package §3.3 KPI table), **27 bar(g) (I.E Feed & Product Summary)**, and
   20 bar(g) minimum (main package §3.1/§3.8). The block diagram shows
   "27–28 bar(g)*" with a footnote. Confirm with KBR.
+- **2026-09-30** — Merged `main` (KBR OSBL sizing + cracker-model log entries)
+  into `claude/capex-reference-table-pqneh6`, then fast-forwarded `main`: brings
+  the Duiker and KBR block flow diagrams to `main`. The only conflict was
+  in this changelog; both sides' entries are kept.
